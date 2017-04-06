@@ -20,7 +20,7 @@ _variables:
     gpg: B42F6819007F00F88E364FD4036A9C25BF357DD4
 
 versions:
-  - dir: '2.1'
+  - dir: '2/2.1'
     repo: cassandra2
     tags:
       - 2.1
@@ -31,7 +31,7 @@ versions:
       cassandra:
         version: '21'
         gpg: '514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA'
-  - dir: '2.2'
+  - dir: '2/2.2'
     repo: cassandra2
     tags:
       - 2
@@ -43,7 +43,7 @@ versions:
       cassandra:
         version: '22'
         gpg: '514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA'
-  - dir: '3.0'
+  - dir: '3/3.0'
     repo: cassandra3
     tags:
       - 3.0
@@ -54,7 +54,7 @@ versions:
       cassandra:
         version: '30'
         gpg: '514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA'
-  - dir: '3.10'
+  - dir: '3/3.10'
     repo: cassandra3
     tags:
       - 3
