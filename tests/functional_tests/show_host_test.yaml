@@ -1,0 +1,15 @@
+setup:
+- command: [docker, run, --privileged=true, --name, some-cassandra, -d, '$IMAGE']
+- command: [sleep, 30s]
+
+teardown:
+- command: [docker, stop, some-cassandra]
+- command: [docker, rm, some-cassandra]
+
+target: some-cassandra
+tests:
+- name: SHOW HOST
+  command: [cqlsh, -e, 'SHOW HOST']
+  expect:
+    stdout:
+      equals: Connected to Test Cluster at 127.0.0.1:9042.
