@@ -1,0 +1,149 @@
+_templates:
+- &Image launcher.gcr.io/google/cassandra3
+- &PullCommand gcloud docker -- pull launcher.gcr.io/google/cassandra3
+- &BaseRun
+  name: cassandra
+  image: *Image
+  exposedPorts:
+  - port: 7000
+  - port: 7001
+  - port: 7199
+  - port: 9042
+  - port: 9160
+- &BaseExec
+  containerFromRun: *BaseRun
+  execType: INTERACTIVE_SHELL
+
+overview:
+  description: |-
+    This image contains an installation of Cassandra 3.x.
+
+    For more information, see the
+    [Official Image Launcher Page](https://console.cloud.google.com/launcher/details/google/cassandra3).
+  dockerfileUrl: https://github.com/GoogleCloudPlatform/cassandra-docker/tree/master/3
+  pullCommand: *PullCommand
+
+taskGroups:
+
+- title: Run a Cassandra server
+  description: This section describes how to spin up Cassandra service using this image.
+  tasks:
+  - title: Start a single Cassandra container
+    runtimes: [DOCKER, KUBERNETES]
+    instructions:
+    - run:
+        <<: *BaseRun
+    - description: >-
+        For information about how to retain your Cassandra data across
+        restarts, see [](#add-persistence).
+  - title: Connect with Cassandra client (cqlsh)
+    runtimes: [DOCKER, KUBERNETES]
+    instructions:
+    - description: You can run `cqlsh` directly within the container.
+      exec:
+        <<: *BaseExec
+        command: cqlsh
+
+- title: Add persistence
+  anchorId: add-persistence
+  tasks:
+  - title: Run with persistent data volumes
+    runtimes: [DOCKER, KUBERNETES]
+    instructions:
+    - description: >-
+        We can mount Cassandra data directory `/var/lib/cassandra` on a
+        persistent volume. This way the installation remains intact across
+        container restarts.
+    - description: >-
+        Assume that `/path/to/your/cassandra` is the persistent directory
+        on the host.
+      applicableRuntimes: [DOCKER]
+    - run:
+        <<: *BaseRun
+        volumes:
+        - name: cassandra-data
+          path: /var/lib/cassandra
+          emptyPersistentVolume:
+            hostPath: /path/to/your/cassandra
+
+# TODO: Add cluster setup instruction
+
+portReference:
+  ports:
+  - port: '7000'
+    description: Cassandra inter-node cluster communication.
+  - port: '7001'
+    description: Cassandra SSL inter-node cluster communication.
+  - port: '7199'
+    description: Cassandra JMX monitoring port.
+  - port: '9042'
+    description: Cassandra client port.
+  - port: '9160'
+    description: Cassandra Thrift client port.
+
+environmentVariableReference:
+  variables:
+  - name: CASSANDRA_LISTEN_ADDRESS
+    description: >-
+      Specifies which IP address to listen on for incoming connections.
+      Defaults to `auto`, which will use the IP address of the container.
+      <br><br>
+      This variable sets the `listen_address` option in `cassandra.yaml`.
+  - name: CASSANDRA_BROADCAST_ADDRESS
+    description: >-
+      Specifies which IP address to advertise to other nodes. Defaults to
+      the value of `CASSANDRA_LISTEN_ADDRESS`.
+      <br><br>
+      This variable sets the `broadcast_address` and `broadcast_rpc_address`
+      options in `cassandra.yaml`.
+  - name: CASSANDRA_RPC_ADDRESS
+    description: >-
+      Specifies which address to bind the thrift rpc server to. Defaults to
+      `0.0.0.0` wildcard address.
+      <br><br>
+      This variable sets the `rpc_address` option in `cassandra.yaml`.
+  - name: CASSANDRA_START_RPC
+    description: >-
+      Specifies starting the thrift rpc server if set to `true`.
+      <br><br>
+      This variable sets the `start_rpc` option in `cassandra.yaml`.
+  - name: CASSANDRA_SEEDS
+    description: >-
+      Specifies a comma-separated list of IP addresses used by gossip for
+      bootstrapping new nodes joining a cluster. The value of
+      `CASSANDRA_BROADCAST_ADDRESS` is automatically added to the list so that
+      the server can also talk to itself.
+      <br><br>
+      This variable sets the `seeds` value of the `seed_provider` option in
+      `cassandra.yaml`.
+  - name: CASSANDRA_CLUSTER_NAME
+    description: >-
+      Specifies the name of the cluster. This value must be the same for all
+      nodes in the same cluster.
+      <br><br>
+      This variable sets the `cluster_name` option in `cassandra.yaml`.
+  - name: CASSANDRA_NUM_TOKENS
+    description: >-
+      Specifies number of tokens for this node.
+      <br><br>
+      This variable sets the `num_tokens` option of `cassandra.yaml`.
+  - name: CASSANDRA_DC
+    description: >-
+      Specifies the datacenter name of this node.
+      <br><br>
+      This variable sets the `dc` option in `cassandra-rackdc.properties`.
+  - name: CASSANDRA_RACK
+    description: >-
+      Specifies the rack name of this node.
+      <br><br>
+      This variable sets the `rack` option in `cassandra-rackdc.properties`.
+  - name: CASSANDRA_ENDPOINT_SNITCH
+    description: >-
+      Specifies the snitch implementation this node will use.
+      <br><br>
+      This variable sets the `endpoint_snitch` option in `cassandra.yml`.
+
+volumeReference:
+  volumes:
+  - path: /var/lib/cassandra
+    description: All Cassandra files are installed here.
