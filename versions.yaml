@@ -24,7 +24,6 @@ versions:
     repo: cassandra2
     tags:
       - 2.1
-      - stable
     from: *from
     packages:
       gosu: *gosu
@@ -47,7 +46,6 @@ versions:
     repo: cassandra3
     tags:
       - 3.0
-      - stable
     from: *from
     packages:
       gosu: *gosu
