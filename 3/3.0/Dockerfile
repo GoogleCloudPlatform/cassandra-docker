@@ -9,6 +9,9 @@ RUN set -x \
 	&& apt-get update && apt-get install -y --no-install-recommends ca-certificates wget && rm -rf /var/lib/apt/lists/* \
 	&& wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture)" \
 	&& wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture).asc" \
+	&& wget -O gosu.tar.gz "https://github.com/tianon/gosu/archive/$GOSU_VERSION.tar.gz" \
+	&& tar -xvf gosu.tar.gz -C /usr/local/src \
+	&& rm gosu.tar.gz \
 	&& export GNUPGHOME="$(mktemp -d)" \
 	&& gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
 	&& gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu \
@@ -62,6 +65,15 @@ RUN rm /tmp/cassandra-version
 RUN sed -ri 's/^(JVM_PATCH_VERSION)=.*/\1=25/' /etc/cassandra/cassandra-env.sh
 
 ENV CASSANDRA_CONFIG /etc/cassandra
+
+# download source code for GPL packages
+RUN set -x \
+	&& apt-get update && apt-get install -y --no-install-recommends ca-certificates wget && rm -rf /var/lib/apt/lists/* \
+	&& BIND9_VER=$(apt-cache policy libdns-export100 | grep "Installed:" | sed 's/.*Installed: 1:\(.*\.dfsg\).*/\1/') \
+	&& wget -O bind.tar.gz "http://security.debian.org/debian-security/pool/updates/main/b/bind9/bind9_${BIND9_VER}.orig.tar.gz" \
+	&& tar -xvf bind.tar.gz -C /usr/local/src \
+	&& rm bind.tar.gz \
+	&& apt-get purge -y --auto-remove ca-certificates wget
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
