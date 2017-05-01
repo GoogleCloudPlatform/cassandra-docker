@@ -6,6 +6,7 @@ For more information, see the
 [Official Image Launcher Page](https://console.cloud.google.com/launcher/details/google/cassandra2).
 
 Pull command:
+
 ```shell
 gcloud docker -- pull launcher.gcr.io/google/cassandra2
 ```
@@ -39,6 +40,7 @@ This section describes how to spin up Cassandra service using this image.
 ### <a name="start-a-single-cassandra-container-kubernetes"></a>Start a single Cassandra container
 
 Copy the following content to `pod.yaml` file, and run `kubectl create -f pod.yaml`.
+
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -53,6 +55,7 @@ spec:
 ```
 
 Run the following to expose the ports:
+
 ```shell
 kubectl expose pod some-cassandra --name some-cassandra-7000 \
   --type LoadBalancer --port 7000 --protocol TCP
@@ -83,6 +86,7 @@ kubectl exec -it some-cassandra -- cqlsh
 We can mount Cassandra data directory `/var/lib/cassandra` on a persistent volume. This way the installation remains intact across container restarts.
 
 Copy the following content to `pod.yaml` file, and run `kubectl create -f pod.yaml`.
+
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -117,6 +121,7 @@ spec:
 ```
 
 Run the following to expose the ports:
+
 ```shell
 kubectl expose pod some-cassandra --name some-cassandra-7000 \
   --type LoadBalancer --port 7000 --protocol TCP
@@ -139,6 +144,7 @@ This section describes how to spin up Cassandra service using this image.
 ### <a name="start-a-single-cassandra-container-docker"></a>Start a single Cassandra container
 
 Use the following content for the `docker-compose.yml` file, then run `docker-compose up`.
+
 ```yaml
 version: '2'
 services:
@@ -175,6 +181,7 @@ We can mount Cassandra data directory `/var/lib/cassandra` on a persistent volum
 Assume that `/path/to/your/cassandra` is the persistent directory on the host.
 
 Use the following content for the `docker-compose.yml` file, then run `docker-compose up`.
+
 ```yaml
 version: '2'
 services:
