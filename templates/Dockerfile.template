@@ -76,7 +76,7 @@ RUN set -x \
 	&& wget -O bind.tar.gz "http://security.debian.org/debian-security/pool/updates/main/b/bind9/bind9_${BIND9_VER}.orig.tar.gz" \
 	&& tar -xvf bind.tar.gz -C /usr/local/src \
 	&& rm bind.tar.gz \
-	&& apt-get purge -y --auto-remove ca-certificates wget
+	&& apt-get purge -y --auto-remove wget
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
