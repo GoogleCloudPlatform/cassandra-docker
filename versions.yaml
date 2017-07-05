@@ -51,15 +51,15 @@ versions:
       cassandra:
         version: '30'
         gpg: '514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA'
-  - dir: '3/3.10'
+  - dir: '3/3.11'
     repo: cassandra3
     tags:
       - '3'
-      - '3.10'
+      - '3.11'
       - latest
     from: *from
     packages:
       gosu: *gosu
       cassandra:
-        version: '310'
+        version: '311'
         gpg: '514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA'

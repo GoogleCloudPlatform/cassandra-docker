@@ -39,15 +39,15 @@ RUN set -ex; \
 	rm -r "$GNUPGHOME"; \
 	apt-key list
 
-RUN echo 'deb http://www.apache.org/dist/cassandra/debian 310x main' >> /etc/apt/sources.list.d/cassandra.list
+RUN echo 'deb http://www.apache.org/dist/cassandra/debian 311x main' >> /etc/apt/sources.list.d/cassandra.list
 
 RUN set -x \
 	&& apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/* \
-	&& curl -s http://dl.bintray.com/apache/cassandra/dists/310x/main/binary-amd64/Packages | awk '/Version/ { print "export CASSANDRA_FULLVERSION=" $2 }' > /tmp/cassandra-version \
+	&& curl -s http://dl.bintray.com/apache/cassandra/dists/311x/main/binary-amd64/Packages | awk '/Version/ { print "export CASSANDRA_FULLVERSION=" $2 }' > /tmp/cassandra-version \
 	&& apt-get purge -y --auto-remove curl
 
 
-ENV CASSANDRA_VERSION 310
+ENV CASSANDRA_VERSION 311
 
 RUN set -x; \
 	. /tmp/cassandra-version \
