@@ -151,6 +151,12 @@ services:
   cassandra:
     container_name: some-cassandra
     image: launcher.gcr.io/google/cassandra3
+    ports:
+      - '7000:7000'
+      - '7001:7001'
+      - '7199:7199'
+      - '9042:9042'
+      - '9160:9160'
 ```
 
 Or you can use `docker run` directly:
@@ -158,6 +164,11 @@ Or you can use `docker run` directly:
 ```shell
 docker run \
   --name some-cassandra \
+  -p 7000:7000 \
+  -p 7001:7001 \
+  -p 7199:7199 \
+  -p 9042:9042 \
+  -p 9160:9160 \
   -d \
   launcher.gcr.io/google/cassandra3
 ```
@@ -188,6 +199,12 @@ services:
   cassandra:
     container_name: some-cassandra
     image: launcher.gcr.io/google/cassandra3
+    ports:
+      - '7000:7000'
+      - '7001:7001'
+      - '7199:7199'
+      - '9042:9042'
+      - '9160:9160'
     volumes:
       - /path/to/your/cassandra:/var/lib/cassandra
 ```
@@ -197,6 +214,11 @@ Or you can use `docker run` directly:
 ```shell
 docker run \
   --name some-cassandra \
+  -p 7000:7000 \
+  -p 7001:7001 \
+  -p 7199:7199 \
+  -p 9042:9042 \
+  -p 9160:9160 \
   -v /path/to/your/cassandra:/var/lib/cassandra \
   -d \
   launcher.gcr.io/google/cassandra3
