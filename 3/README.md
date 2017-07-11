@@ -5,7 +5,7 @@ This image contains an installation of Cassandra 3.x.
 For more information, see the
 [Official Image Launcher Page](https://console.cloud.google.com/launcher/details/google/cassandra3).
 
-Pull command:
+Pull command (first install [gcloud](https://cloud.google.com/sdk/downloads)):
 
 ```shell
 gcloud docker -- pull launcher.gcr.io/google/cassandra3
@@ -33,6 +33,9 @@ Dockerfile for this image can be found [here](https://github.com/GoogleCloudPlat
 
 # <a name="using-kubernetes"></a>Using Kubernetes
 
+Consult [Launcher container documentation](https://cloud.google.com/launcher/docs/launcher-container)
+for additional information about setting up your Kubernetes environment.
+
 ## <a name="run-a-cassandra-server-kubernetes"></a>Run a Cassandra server
 
 This section describes how to spin up Cassandra service using this image.
@@ -54,7 +57,10 @@ spec:
       name: cassandra
 ```
 
-Run the following to expose the ports:
+Run the following to expose the ports.
+Depending on your cluster setup, this might expose your service to the
+Internet with an external IP address. For more information, consult
+[Kubernetes documentation](https://kubernetes.io/docs/concepts/services-networking/connect-applications-service/).
 
 ```shell
 kubectl expose pod some-cassandra --name some-cassandra-7000 \
@@ -120,7 +126,10 @@ spec:
       storage: 5Gi
 ```
 
-Run the following to expose the ports:
+Run the following to expose the ports.
+Depending on your cluster setup, this might expose your service to the
+Internet with an external IP address. For more information, consult
+[Kubernetes documentation](https://kubernetes.io/docs/concepts/services-networking/connect-applications-service/).
 
 ```shell
 kubectl expose pod some-cassandra --name some-cassandra-7000 \
@@ -137,6 +146,9 @@ kubectl expose pod some-cassandra --name some-cassandra-9160 \
 
 # <a name="using-docker"></a>Using Docker
 
+Consult [Launcher container documentation](https://cloud.google.com/launcher/docs/launcher-container)
+for additional information about setting up your Docker environment.
+
 ## <a name="run-a-cassandra-server-docker"></a>Run a Cassandra server
 
 This section describes how to spin up Cassandra service using this image.
@@ -151,6 +163,12 @@ services:
   cassandra:
     container_name: some-cassandra
     image: launcher.gcr.io/google/cassandra3
+    ports:
+      - '7000:7000'
+      - '7001:7001'
+      - '7199:7199'
+      - '9042:9042'
+      - '9160:9160'
 ```
 
 Or you can use `docker run` directly:
@@ -158,6 +176,11 @@ Or you can use `docker run` directly:
 ```shell
 docker run \
   --name some-cassandra \
+  -p 7000:7000 \
+  -p 7001:7001 \
+  -p 7199:7199 \
+  -p 9042:9042 \
+  -p 9160:9160 \
   -d \
   launcher.gcr.io/google/cassandra3
 ```
@@ -188,6 +211,12 @@ services:
   cassandra:
     container_name: some-cassandra
     image: launcher.gcr.io/google/cassandra3
+    ports:
+      - '7000:7000'
+      - '7001:7001'
+      - '7199:7199'
+      - '9042:9042'
+      - '9160:9160'
     volumes:
       - /path/to/your/cassandra:/var/lib/cassandra
 ```
@@ -197,6 +226,11 @@ Or you can use `docker run` directly:
 ```shell
 docker run \
   --name some-cassandra \
+  -p 7000:7000 \
+  -p 7001:7001 \
+  -p 7199:7199 \
+  -p 9042:9042 \
+  -p 9160:9160 \
   -v /path/to/your/cassandra:/var/lib/cassandra \
   -d \
   launcher.gcr.io/google/cassandra3
