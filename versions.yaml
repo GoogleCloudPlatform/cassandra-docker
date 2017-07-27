@@ -22,6 +22,7 @@ versions:
   - dir: '2/2.1'
     repo: cassandra2
     tags:
+      - '2.1.18'
       - '2.1'
     from: *from
     packages:
@@ -32,8 +33,9 @@ versions:
   - dir: '2/2.2'
     repo: cassandra2
     tags:
-      - '2'
+      - '2.2.10'
       - '2.2'
+      - '2'
       - latest
     from: *from
     packages:
@@ -44,6 +46,7 @@ versions:
   - dir: '3/3.0'
     repo: cassandra3
     tags:
+      - '3.0.14'
       - '3.0'
     from: *from
     packages:
@@ -54,8 +57,9 @@ versions:
   - dir: '3/3.11'
     repo: cassandra3
     tags:
-      - '3'
+      - '3.11.0'
       - '3.11'
+      - '3'
       - latest
     from: *from
     packages:
