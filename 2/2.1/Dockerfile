@@ -39,19 +39,12 @@ RUN set -ex; \
 	rm -r "$GNUPGHOME"; \
 	apt-key list
 
-RUN echo 'deb http://www.apache.org/dist/cassandra/debian 21x main' >> /etc/apt/sources.list.d/cassandra.list
+RUN echo 2.1.18 | sed 's-\([^.]\+\)\.\([^.]\+\).*$-deb http://www.apache.org/dist/cassandra/debian \1\2x main-' >> /etc/apt/sources.list.d/cassandra.list
 
-RUN set -x \
-	&& apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/* \
-	&& curl -s http://dl.bintray.com/apache/cassandra/dists/21x/main/binary-amd64/Packages | awk '/Version/ { print "export CASSANDRA_FULLVERSION=" $2 }' > /tmp/cassandra-version \
-	&& apt-get purge -y --auto-remove curl
-
-
-ENV CASSANDRA_VERSION 21
+ENV CASSANDRA_VERSION 2.1.18
 
 RUN set -x; \
-	. /tmp/cassandra-version \
-	&& if [ "${CASSANDRA_FULLVERSION%%.*}" = "3" ]; then \
+	if [ "${CASSANDRA_VERSION%%.*}" = "3" ]; then \
 		echo deb http://httpredir.debian.org/debian jessie-backports main > /etc/apt/sources.list.d/backports.list ; \
 		apt-get update && apt-get upgrade; \
 		apt-get -t jessie-backports install -y openjdk-8-jre-headless; \
@@ -59,11 +52,8 @@ RUN set -x; \
 	fi
 
 RUN apt-get update \
-	&& . /tmp/cassandra-version \
-	&& apt-get install -y cassandra="$CASSANDRA_FULLVERSION" \
+	&& apt-get install -y cassandra="$CASSANDRA_VERSION" \
 	&& rm -rf /var/lib/apt/lists/*
-
-RUN rm /tmp/cassandra-version
 
 # https://issues.apache.org/jira/browse/CASSANDRA-11661
 RUN sed -ri 's/^(JVM_PATCH_VERSION)=.*/\1=25/' /etc/cassandra/cassandra-env.sh
