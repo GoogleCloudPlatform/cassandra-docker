@@ -23,25 +23,25 @@ versions:
     repo: cassandra2
     tags:
       - '2.1'
-      - '2.1.18'
+      - '2.1.19'
     from: *from
     packages:
       gosu: *gosu
       cassandra:
-        version: '2.1.18'
+        version: '2.1.19'
         gpg: '514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA'
   - dir: '2/2.2'
     repo: cassandra2
     tags:
       - '2'
       - '2.2'
-      - '2.2.10'
+      - '2.2.11'
       - latest
     from: *from
     packages:
       gosu: *gosu
       cassandra:
-        version: '2.2.10'
+        version: '2.2.11'
         gpg: '514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA'
   - dir: '3/3.0'
     repo: cassandra3
