@@ -11,7 +11,7 @@ RUN set -x \
 	&& wget -q -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture).asc" \
 	&& wget -q -O /usr/local/src/gosu.tar.gz "https://github.com/tianon/gosu/archive/$GOSU_VERSION.tar.gz" \
 	&& export GNUPGHOME="$(mktemp -d)" \
-	&& gpg --keyserver pgp.mit.edu --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
+	&& gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
 	&& gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu \
 	&& rm -r "$GNUPGHOME" /usr/local/bin/gosu.asc \
 	&& chmod +x /usr/local/bin/gosu \
@@ -27,7 +27,7 @@ ENV GPG_KEYS 514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA2
 RUN set -ex; \
 	export GNUPGHOME="$(mktemp -d)"; \
 	for key in $GPG_KEYS; do \
-		gpg --keyserver pgp.mit.edu --recv-keys "$key"; \
+		gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
 	done; \
 	gpg --export $GPG_KEYS > /etc/apt/trusted.gpg.d/cassandra.gpg; \
 	rm -r "$GNUPGHOME"; \
