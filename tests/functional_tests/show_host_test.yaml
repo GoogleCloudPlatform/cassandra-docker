@@ -13,14 +13,14 @@
 # limitations under the License.
 
 setup:
-- command: [docker, run, --privileged=true, --name, some-cassandra, -d, '$IMAGE']
+- command: [docker, run, --privileged=true, --name, some-cassandra-$UNIQUE-id, -d, '$IMAGE']
 - command: [sleep, 30s]
 
 teardown:
-- command: [docker, stop, some-cassandra]
-- command: [docker, rm, some-cassandra]
+- command: [docker, stop, some-cassandra-$UNIQUE-id]
+- command: [docker, rm, some-cassandra-$UNIQUE-id]
 
-target: some-cassandra
+target: some-cassandra-$UNIQUE-id
 tests:
 - name: SHOW HOST
   command: [cqlsh, -e, 'SHOW HOST']
