@@ -33,9 +33,9 @@ RUN set -ex; \
 	rm -r "$GNUPGHOME"; \
 	apt-key list
 
-RUN echo 3.0.15 | sed 's-\([^.]\+\)\.\([^.]\+\).*$-deb http://www.apache.org/dist/cassandra/debian \1\2x main-' >> /etc/apt/sources.list.d/cassandra.list
+RUN echo 3.0.16 | sed 's-\([^.]\+\)\.\([^.]\+\).*$-deb http://www.apache.org/dist/cassandra/debian \1\2x main-' >> /etc/apt/sources.list.d/cassandra.list
 
-ENV CASSANDRA_VERSION 3.0.15
+ENV CASSANDRA_VERSION 3.0.16
 
 RUN set -x; \
 	if [ "${CASSANDRA_VERSION%%.*}" = "3" ]; then \
