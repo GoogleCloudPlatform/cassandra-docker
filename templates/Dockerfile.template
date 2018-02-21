@@ -8,6 +8,16 @@ RUN groupadd -r cassandra --gid=999 && useradd -r -g cassandra --uid=999 cassand
 
 # grab gosu for easy step-down from root
 ENV GOSU_VERSION {{ $gosu.Version }}
+RUN set -ex; \
+        if ! command -v gpg > /dev/null; then \
+                apt-get update; \
+                apt-get install -y --no-install-recommends \
+                        gnupg \
+                        dirmngr \
+			procps \
+		; \
+                rm -rf /var/lib/apt/lists/*; \
+        fi
 RUN set -x \
 	&& apt-get update && apt-get install -y --no-install-recommends ca-certificates wget && rm -rf /var/lib/apt/lists/* \
 	&& wget -q -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture)" \
