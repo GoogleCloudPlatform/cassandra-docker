@@ -1,10 +1,20 @@
-FROM gcr.io/google-appengine/debian8:latest
+FROM gcr.io/google-appengine/debian9:latest
 
 # explicitly set user/group IDs
 RUN groupadd -r cassandra --gid=999 && useradd -r -g cassandra --uid=999 cassandra
 
 # grab gosu for easy step-down from root
 ENV GOSU_VERSION 1.10
+RUN set -ex; \
+        if ! command -v gpg > /dev/null; then \
+                apt-get update; \
+                apt-get install -y --no-install-recommends \
+                        gnupg \
+                        dirmngr \
+			procps \
+		; \
+                rm -rf /var/lib/apt/lists/*; \
+        fi
 RUN set -x \
 	&& apt-get update && apt-get install -y --no-install-recommends ca-certificates wget && rm -rf /var/lib/apt/lists/* \
 	&& wget -q -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture)" \
