@@ -11,8 +11,9 @@ RUN set -ex; \
                 apt-get install -y --no-install-recommends \
                         gnupg \
                         dirmngr \
-			procps \
-		; \
+                        procps \
+                        ntp \
+                ; \
                 rm -rf /var/lib/apt/lists/*; \
         fi
 RUN set -x \
@@ -21,7 +22,21 @@ RUN set -x \
 	&& wget -q -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture).asc" \
 	&& wget -q -O /usr/local/src/gosu.tar.gz "https://github.com/tianon/gosu/archive/$GOSU_VERSION.tar.gz" \
 	&& export GNUPGHOME="$(mktemp -d)" \
-	&& gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
+	&& found='' \
+	&& for server in \
+		pool.sks-keyservers.net \
+		ha.pool.sks-keyservers.net \
+		pgp.mit.edu \
+		na.pool.sks-keyservers.net \
+		eu.pool.sks-keyservers.net \
+		oc.pool.sks-keyservers.net \
+		ha.pool.sks-keyservers.net \
+		hkp://p80.pool.sks-keyservers.net:80 \
+		hkp://keyserver.ubuntu.com:80 \
+	; do \
+		gpg --keyserver $server --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
+			&& found="yes" && break; \
+	done; test -n "$found" \
 	&& gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu \
 	&& rm -r "$GNUPGHOME" /usr/local/bin/gosu.asc \
 	&& chmod +x /usr/local/bin/gosu \
@@ -46,14 +61,6 @@ RUN set -ex; \
 RUN echo 2.1.20 | sed 's-\([^.]\+\)\.\([^.]\+\).*$-deb http://www.apache.org/dist/cassandra/debian \1\2x main-' >> /etc/apt/sources.list.d/cassandra.list
 
 ENV CASSANDRA_VERSION 2.1.20
-
-RUN set -x; \
-	if [ "${CASSANDRA_VERSION%%.*}" = "3" ]; then \
-		echo deb http://httpredir.debian.org/debian jessie-backports main > /etc/apt/sources.list.d/backports.list ; \
-		apt-get update && apt-get upgrade; \
-		apt-get -t jessie-backports install -y openjdk-8-jre-headless; \
-		apt-get install -y ntp; \
-	fi
 
 RUN apt-get update \
 	&& apt-get install -y cassandra="$CASSANDRA_VERSION" \
