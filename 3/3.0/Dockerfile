@@ -51,8 +51,22 @@ ENV GPG_KEYS 514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA2
 
 RUN set -ex; \
 	export GNUPGHOME="$(mktemp -d)"; \
-	for key in $GPG_KEYS; do \
-		gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
+	for key in $GPG_KEYS \
+	    ; do \
+    	      	 found=''; \
+    		 for server in \
+        	     pool.sks-keyservers.net \
+        	     ha.pool.sks-keyservers.net \
+		     pgp.mit.edu \
+        	     na.pool.sks-keyservers.net \
+        	     eu.pool.sks-keyservers.net \
+        	     oc.pool.sks-keyservers.net \
+        	     ha.pool.sks-keyservers.net \
+        	     hkp://p80.pool.sks-keyservers.net:80 \
+        	     hkp://keyserver.ubuntu.com:80 \
+        	 ; do \
+            	      gpg --keyserver $server --recv-keys "$key" && found="yes" && break; \
+   		 done; test -n "$found"; \
 	done; \
 	gpg --export $GPG_KEYS > /etc/apt/trusted.gpg.d/cassandra.gpg; \
 	rm -r "$GNUPGHOME"; \
