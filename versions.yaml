@@ -13,8 +13,8 @@
 # limitations under the License.
 
 _variables:
-  from9: &from8 gcr.io/google-appengine/debian9:latest
-  from8: &from9 gcr.io/google-appengine/debian8:latest
+  from9: &from9 gcr.io/google-appengine/debian9:latest
+  from8: &from8 gcr.io/google-appengine/debian8:latest
   gosu: &gosu
     version: '1.10'
     gpg: B42F6819007F00F88E364FD4036A9C25BF357DD4
