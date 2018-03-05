@@ -1,13 +1,10 @@
-FROM {{ .From }}
+FROM gcr.io/google-appengine/debian8:latest
 
 # explicitly set user/group IDs
 RUN groupadd -r cassandra --gid=999 && useradd -r -g cassandra --uid=999 cassandra
 
-{{- $gosu := index .Packages "gosu" }}
-{{- $cassandra := index .Packages "cassandra" }}
-
 # grab gosu for easy step-down from root
-ENV GOSU_VERSION {{ $gosu.Version }}
+ENV GOSU_VERSION 1.10
 RUN set -ex; \
         if ! command -v gpg > /dev/null; then \
                 apt-get update; \
@@ -36,7 +33,7 @@ RUN set -x \
 		hkp://p80.pool.sks-keyservers.net:80 \
 		hkp://keyserver.ubuntu.com:80 \
 	; do \
-		gpg --keyserver $server --recv-keys {{ $gosu.Gpg }} \
+		gpg --keyserver $server --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
 			&& found="yes" && break; \
 	done; test -n "$found" \
 	&& gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu \
@@ -49,7 +46,7 @@ RUN set -x \
 RUN apt-get update && apt-get install -y --no-install-recommends libjemalloc1 && rm -rf /var/lib/apt/lists/*
 
 # https://wiki.apache.org/cassandra/DebianPackaging#Adding_Repository_Keys
-ENV GPG_KEYS {{ $cassandra.Gpg }}
+ENV GPG_KEYS 514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA
 
 RUN set -ex; \
 	export GNUPGHOME="$(mktemp -d)"; \
@@ -74,9 +71,9 @@ RUN set -ex; \
 	rm -r "$GNUPGHOME"; \
 	apt-key list
 
-RUN echo {{ $cassandra.Version }} | sed 's-\([^.]\+\)\.\([^.]\+\).*$-deb http://www.apache.org/dist/cassandra/debian \1\2x main-' >> /etc/apt/sources.list.d/cassandra.list
+RUN echo 3.0.16 | sed 's-\([^.]\+\)\.\([^.]\+\).*$-deb http://www.apache.org/dist/cassandra/debian \1\2x main-' >> /etc/apt/sources.list.d/cassandra.list
 
-ENV CASSANDRA_VERSION {{ $cassandra.Version }}
+ENV CASSANDRA_VERSION 3.0.16
 
 RUN set -x; \
 	if [ "${CASSANDRA_VERSION%%.*}" = "3" ]; then \

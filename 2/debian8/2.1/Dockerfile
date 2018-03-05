@@ -10,10 +10,9 @@ RUN set -ex; \
                 apt-get update; \
                 apt-get install -y --no-install-recommends \
                         gnupg \
-                        dirmngr \
-                        procps \
-                        ntp \
-                ; \
+                        dirmngr; \
+		apt-get install -y procps; \
+		apt-get install -y ntp; \
                 rm -rf /var/lib/apt/lists/*; \
         fi
 RUN set -x \
@@ -72,9 +71,17 @@ RUN set -ex; \
 	rm -r "$GNUPGHOME"; \
 	apt-key list
 
-RUN echo 3.11.2 | sed 's-\([^.]\+\)\.\([^.]\+\).*$-deb http://www.apache.org/dist/cassandra/debian \1\2x main-' >> /etc/apt/sources.list.d/cassandra.list
+RUN echo 2.1.20 | sed 's-\([^.]\+\)\.\([^.]\+\).*$-deb http://www.apache.org/dist/cassandra/debian \1\2x main-' >> /etc/apt/sources.list.d/cassandra.list
 
-ENV CASSANDRA_VERSION 3.11.2
+ENV CASSANDRA_VERSION 2.1.20
+
+RUN set -x; \
+	if [ "${CASSANDRA_VERSION%%.*}" = "3" ]; then \
+		echo deb http://httpredir.debian.org/debian jessie-backports main > /etc/apt/sources.list.d/backports.list ; \
+		apt-get update && apt-get upgrade; \
+		apt-get -t jessie-backports install -y openjdk-8-jre-headless; \
+		apt-get install -y ntp; \
+	fi
 
 RUN apt-get update \
 	&& apt-get install -y cassandra="$CASSANDRA_VERSION" \
