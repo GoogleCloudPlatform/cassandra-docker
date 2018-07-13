@@ -124,3 +124,6 @@ versions:
       cassandra:
         version: '3.11.2'
         gpg: '514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA'
+
+cloudbuild:
+  enable_parallel: true
