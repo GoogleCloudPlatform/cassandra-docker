@@ -39,11 +39,11 @@ RUN set -x \
 		hkp://keyserver.ubuntu.com:80 \
 		pgp.mit.edu \
 	; do \
-		gpg --keyserver $server --recv-keys $GOSU_GPG \
+		gpg --no-tty --keyserver $server --recv-keys $GOSU_GPG \
 			&& found=yes && break; \
 	done; \
 	test -n "$found" \
-	&& gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu \
+	&& gpg --no-tty --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu \
 	&& rm -rf "$GNUPGHOME" /usr/local/bin/gosu.asc \
 	&& chmod +x /usr/local/bin/gosu \
 	&& gosu nobody true \
@@ -69,12 +69,12 @@ RUN set -ex; \
 		hkp://keyserver.ubuntu.com:80 \
 		pgp.mit.edu \
 	; do \
-		gpg --keyserver $server --recv-keys "${key}" \
+		gpg --no-tty --keyserver $server --recv-keys "${key}" \
 			&& found=yes && break; \
 	done; \
 	test -n "$found"; \
 	done; \
-	gpg --export $GPG_KEYS > /etc/apt/trusted.gpg.d/cassandra.gpg; \
+	gpg --no-tty --export $GPG_KEYS > /etc/apt/trusted.gpg.d/cassandra.gpg; \
 	rm -rf "$GNUPGHOME"; \
 	apt-key list
 
