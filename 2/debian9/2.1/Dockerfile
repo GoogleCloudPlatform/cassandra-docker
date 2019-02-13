@@ -78,9 +78,9 @@ RUN set -ex; \
 	rm -rf "$GNUPGHOME"; \
 	apt-key list
 
-RUN echo 2.1.20 | sed 's-\([^.]\+\)\.\([^.]\+\).*$-deb http://www.apache.org/dist/cassandra/debian \1\2x main-' >> /etc/apt/sources.list.d/cassandra.list
+RUN echo 2.1.21 | sed 's-\([^.]\+\)\.\([^.]\+\).*$-deb http://www.apache.org/dist/cassandra/debian \1\2x main-' >> /etc/apt/sources.list.d/cassandra.list
 
-ENV CASSANDRA_VERSION 2.1.20
+ENV CASSANDRA_VERSION 2.1.21
 
 RUN set -x; \
 	if [ "${CASSANDRA_VERSION%%.*}" = "3" ]; then \
