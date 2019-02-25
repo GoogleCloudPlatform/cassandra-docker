@@ -22,23 +22,23 @@ versions:
   - dir: '2/debian9/2.1'
     repo: cassandra2
     tags:
-      - '2.1.20-debian9'
+      - '2.1.21-debian9'
       - '2.1-debian9'
-      - '2.1.20'
+      - '2.1.21'
       - '2.1'
     from: *from9
     packages:
       gosu: *gosu
       cassandra:
-        version: '2.1.20'
+        version: '2.1.21'
         gpg: '514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA'
   - dir: '2/debian9/2.2'
     repo: cassandra2
     tags:
-      - '2.2.13-debian9'
+      - '2.2.14-debian9'
       - '2.2-debian9'
       - '2-debian9'
-      - '2.2.13'
+      - '2.2.14'
       - '2.2'
       - '2'
       - 'latest'
@@ -46,28 +46,28 @@ versions:
     packages:
       gosu: *gosu
       cassandra:
-        version: '2.2.13'
+        version: '2.2.14'
         gpg: '514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA'
   - dir: '3/debian9/3.0'
     repo: cassandra3
     tags:
-      - '3.0.17-debian9'
+      - '3.0.18-debian9'
       - '3.0-debian9'
-      - '3.0.17'
+      - '3.0.18'
       - '3.0'
     from: *from9
     packages:
       gosu: *gosu
       cassandra:
-        version: '3.0.17'
+        version: '3.0.18'
         gpg: '514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA'
   - dir: '3/debian9/3.11'
     repo: cassandra3
     tags:
-      - '3.11.3-debian9'
+      - '3.11.4-debian9'
       - '3.11-debian9'
       - '3-debian9'
-      - '3.11.3'
+      - '3.11.4'
       - '3.11'
       - '3'
       - 'latest'
@@ -75,7 +75,7 @@ versions:
     packages:
       gosu: *gosu
       cassandra:
-        version: '3.11.3'
+        version: '3.11.4'
         gpg: '514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA'
 
 cloudbuild:
