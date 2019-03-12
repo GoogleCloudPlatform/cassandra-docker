@@ -73,6 +73,12 @@ if [ "$1" = 'cassandra' ]; then
 			sed -ri 's/^('"$rackdc"'=).*/\1 '"$val"'/' "$CASSANDRA_CONFIG/cassandra-rackdc.properties"
 		fi
 	done
+
+	: ${CASSANDRA_PROMETHEUS_ENABLED='false'}
+
+	if [ "${CASSANDRA_PROMETHEUS_ENABLED}" = 'true' ]; then
+		echo 'JVM_OPTS="$JVM_OPTS -javaagent:'$JMX_EXPORTER_AGENT=9404:$JMX_EXPORTER_CONFIG'"' >> $CASSANDRA_CONFIG/cassandra-env.sh
+	fi
 fi
 
 exec "$@"
