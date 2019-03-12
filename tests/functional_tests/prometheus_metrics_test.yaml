@@ -1,0 +1,39 @@
+# Copyright 2017 Google Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+setup:
+- command: [docker, run, --privileged=true, --name, some-cassandra-$UNIQUE-id, -e, 'CASSANDRA_PROMETHEUS_ENABLED=true', -d, '$IMAGE']
+- command: [sleep, 5s]
+- command: [docker, exec, some-cassandra-$UNIQUE-id, sh, -c, 'apt-get update && apt-get install -y curl']
+- command: [sleep, 20s]
+
+teardown:
+- command: [docker, stop, some-cassandra-$UNIQUE-id]
+- command: [docker, rm, some-cassandra-$UNIQUE-id]
+
+target: some-cassandra-$UNIQUE-id
+tests:
+- name: Test Prometheus metrics
+  command: [curl, 'http://localhost:9404/metrics']
+  expect:
+    stdout:
+      matches: '# HELP jvm_info JVM version info'
+- name: Specific JMX version
+  command: [sha512sum, /opt/jmx-exporter/LICENSE, /opt/jmx-exporter/NOTICE, /opt/jmx-exporter/jmx_prometheus_javaagent-0.11.0.jar]
+  expect:
+    stdout:
+      matches: |
+        dc6b68d13b8cf959644b935f1192b02c71aa7a5cf653bd43b4480fa89eec8d4d3f16a2278ec8c3b40ab1fdb233b3173a78fd83590d6f739e0c9e8ff56c282557  /opt/jmx-exporter/LICENSE
+        fccf715f6717d91f5d92ca77e8bcb4b3ff5c6ce55b328722e80c49747737e6724ad88b4c3162bad8c97977d46cded431b120041231b81f55dc2ee63f6554a258  /opt/jmx-exporter/NOTICE
+        d3a08ec8d797382cd85cb952b2a790e7775c9487f36f205d037fa7c0a2d3bdea3e36d3785ea587dad2850c202a68ee3dd762c558f326b2707b50f898f7a096a2  /opt/jmx-exporter/jmx_prometheus_javaagent-0.11.0.jar
