@@ -266,6 +266,7 @@ These are the environment variables understood by the container image.
 | CASSANDRA_DC | Specifies the datacenter name of this node. <br><br> This variable sets the `dc` option in `cassandra-rackdc.properties`. |
 | CASSANDRA_RACK | Specifies the rack name of this node. <br><br> This variable sets the `rack` option in `cassandra-rackdc.properties`. |
 | CASSANDRA_ENDPOINT_SNITCH | Specifies the snitch implementation this node will use. <br><br> This variable sets the `endpoint_snitch` option in `cassandra.yml`. |
+| CASSANDRA_PROMETHEUS_ENABLED | Specifies if Prometheus metrics should be visible. <br><br> If set to `true`, this variable adds [JMX Exporter](https://github.com/prometheus/jmx_exporter) as a Java agent in `$JVM_OPTS` variable. Metrics are available under local endpoint http://localhost:9404/metrics. |
 
 ## <a name="references-volumes"></a>Volumes
 
