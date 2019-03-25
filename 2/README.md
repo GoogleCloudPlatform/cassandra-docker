@@ -73,6 +73,8 @@ kubectl expose pod some-cassandra --name some-cassandra-9042 \
   --type LoadBalancer --port 9042 --protocol TCP
 kubectl expose pod some-cassandra --name some-cassandra-9160 \
   --type LoadBalancer --port 9160 --protocol TCP
+kubectl expose pod some-cassandra --name some-cassandra-9404 \
+  --type LoadBalancer --port 9404 --protocol TCP
 ```
 
 For information about how to retain your Cassandra data across restarts, see [Add persistence](#add-persistence-kubernetes).
@@ -142,6 +144,8 @@ kubectl expose pod some-cassandra --name some-cassandra-9042 \
   --type LoadBalancer --port 9042 --protocol TCP
 kubectl expose pod some-cassandra --name some-cassandra-9160 \
   --type LoadBalancer --port 9160 --protocol TCP
+kubectl expose pod some-cassandra --name some-cassandra-9404 \
+  --type LoadBalancer --port 9404 --protocol TCP
 ```
 
 # <a name="using-docker"></a>Using Docker
@@ -169,6 +173,7 @@ services:
       - '7199:7199'
       - '9042:9042'
       - '9160:9160'
+      - '9404:9404'
 ```
 
 Or you can use `docker run` directly:
@@ -181,6 +186,7 @@ docker run \
   -p 7199:7199 \
   -p 9042:9042 \
   -p 9160:9160 \
+  -p 9404:9404 \
   -d \
   launcher.gcr.io/google/cassandra2
 ```
@@ -217,6 +223,7 @@ services:
       - '7199:7199'
       - '9042:9042'
       - '9160:9160'
+      - '9404:9404'
     volumes:
       - /path/to/your/cassandra:/var/lib/cassandra
 ```
@@ -231,6 +238,7 @@ docker run \
   -p 7199:7199 \
   -p 9042:9042 \
   -p 9160:9160 \
+  -p 9404:9404 \
   -v /path/to/your/cassandra:/var/lib/cassandra \
   -d \
   launcher.gcr.io/google/cassandra2
@@ -249,6 +257,7 @@ These are the ports exposed by the container image.
 | TCP 7199 | Cassandra JMX monitoring port. |
 | TCP 9042 | Cassandra client port. |
 | TCP 9160 | Cassandra Thrift client port. |
+| TCP 9404 | Prometheus plugin port. |
 
 ## <a name="references-environment-variables"></a>Environment Variables
 
