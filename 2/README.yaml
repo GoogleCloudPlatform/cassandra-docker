@@ -24,6 +24,7 @@ _templates:
   - port: 7199
   - port: 9042
   - port: 9160
+  - port: 9404
 - &BaseExec
   containerFromRun: *BaseRun
   execType: INTERACTIVE_SHELL
@@ -94,6 +95,8 @@ portReference:
     description: Cassandra client port.
   - port: '9160'
     description: Cassandra Thrift client port.
+  - port: '9404'
+    description: Prometheus plugin port.
 
 environmentVariableReference:
   variables:
