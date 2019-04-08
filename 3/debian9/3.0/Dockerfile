@@ -84,10 +84,8 @@ ENV CASSANDRA_VERSION 3.0.18
 
 RUN set -x; \
 	if [ "${CASSANDRA_VERSION%%.*}" = "3" ]; then \
-		echo deb http://httpredir.debian.org/debian jessie-backports main > /etc/apt/sources.list.d/backports.list ; \
 		apt-get update && apt-get upgrade; \
-		apt-get -t jessie-backports install -y openjdk-8-jre-headless; \
-		apt-get install -y ntp; \
+		apt-get install -y openjdk-8-jre-headless ntp; \
 	fi
 
 ENV JMX_EXPORTER_VERSION 0.11.0
