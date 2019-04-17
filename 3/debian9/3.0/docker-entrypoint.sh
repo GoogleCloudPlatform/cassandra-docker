@@ -79,6 +79,14 @@ if [ "$1" = 'cassandra' ]; then
 	if [ "${CASSANDRA_PROMETHEUS_ENABLED}" = 'true' ]; then
 		echo 'JVM_OPTS="$JVM_OPTS -javaagent:'$JMX_EXPORTER_AGENT=9404:$JMX_EXPORTER_CONFIG'"' >> $CASSANDRA_CONFIG/cassandra-env.sh
 	fi
+
+	: ${CASSANDRA_CGROUP_MEMORY_LIMIT='false'}
+
+	if [ "${CASSANDRA_CGROUP_MEMORY_LIMIT}" = 'true' ]; then
+	  sed -i 's/^DEFINED_XMX=\$?$/DEFINED_XMX=0/g' $CASSANDRA_CONFIG/cassandra-env.sh
+	  sed -i 's/^DEFINED_XMS=\$?$/DEFINED_XMS=0/g' $CASSANDRA_CONFIG/cassandra-env.sh
+		echo 'JVM_OPTS="$JVM_OPTS -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=1"' >> $CASSANDRA_CONFIG/cassandra-env.sh
+	fi
 fi
 
 exec "$@"
