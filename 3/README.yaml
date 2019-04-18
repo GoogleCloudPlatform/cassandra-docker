@@ -172,7 +172,7 @@ environmentVariableReference:
       Specifies if heap size should be limited by cgroup constraints
       <br><br>
       If set to `true`, this variable add
-      `-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=1`
+      `-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2`
       to `$JVM_OPTS` variable. This will restrict maximum heap size to cgroup limit.
 
 volumeReference:
