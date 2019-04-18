@@ -167,6 +167,13 @@ environmentVariableReference:
       [JMX Exporter](https://github.com/prometheus/jmx_exporter) as a Java agent
       in `$JVM_OPTS` variable. Metrics are available under local endpoint
       http://localhost:9404/metrics.
+  - name: CASSANDRA_CGROUP_MEMORY_LIMIT
+    description: >-
+      Specifies if heap size should be limited by cgroup constraints
+      <br><br>
+      If set to `true`, this variable add
+      `-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2`
+      to `$JVM_OPTS` variable. This will restrict maximum heap size to cgroup limit.
 
 volumeReference:
   volumes:
