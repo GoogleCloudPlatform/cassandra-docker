@@ -57,6 +57,8 @@ RUN echo {{ $cassandra.Version }} | sed 's-\([^.]\+\)\.\([^.]\+\).*$-deb http://
 
 ENV CASSANDRA_VERSION {{ $cassandra.Version }}
 
+ENV C2D_RELEASE=${CASSANDRA_VERSION}
+
 RUN set -x; \
 	if [ "${CASSANDRA_VERSION%%.*}" = "3" ]; then \
 		apt-get update && apt-get upgrade; \
@@ -95,6 +97,9 @@ RUN mkdir -p /var/lib/cassandra "$CASSANDRA_CONFIG" \
 	&& chown -R cassandra:cassandra /var/lib/cassandra "$CASSANDRA_CONFIG" "$JMX_EXPORTER_PATH" \
 	&& chmod 777 /var/lib/cassandra "$CASSANDRA_CONFIG" "$JMX_EXPORTER_PATH"
 VOLUME /var/lib/cassandra
+
+RUN test ${C2D_RELEASE} = $(cassandra -v) \
+         || { echo "Version check failed"; exit 1; }
 
 # 7000: intra-node communication
 # 7001: TLS intra-node communication
