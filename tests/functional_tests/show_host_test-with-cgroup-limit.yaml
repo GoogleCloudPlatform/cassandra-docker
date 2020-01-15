@@ -13,8 +13,8 @@
 # limitations under the License.
 
 setup:
-- command: [docker, run, --privileged=true, --name, some-cassandra-$UNIQUE-id, -e CASSANDRA_CGROUP_MEMORY_LIMIT=true, --memory-swap=0, --memory="512m" -d, '$IMAGE']
-- command: [sleep, 30s]
+- command: [docker, run, --privileged=true, --name, some-cassandra-$UNIQUE-id, -e CASSANDRA_CGROUP_MEMORY_LIMIT=true, --memory-swap=0, --memory=512M, -d, '$IMAGE']
+- command: [sleep, 60s]
 
 teardown:
 - command: [docker, stop, some-cassandra-$UNIQUE-id]
