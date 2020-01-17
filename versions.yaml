@@ -1,4 +1,4 @@
-# Copyright 2017 Google Inc.
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,71 +12,63 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-_variables:
-  from9: &from9 gcr.io/google-appengine/debian9:latest
-  gosu: &gosu
-    version: '1.10'
-    gpg: B42F6819007F00F88E364FD4036A9C25BF357DD4
-
-versions:
-  - dir: '2/debian9/2.1'
-    repo: cassandra2
-    tags:
-      - '2.1.21-debian9'
-      - '2.1-debian9'
-      - '2.1.21'
-      - '2.1'
-    from: *from9
-    packages:
-      gosu: *gosu
-      cassandra:
-        version: '2.1.21'
-        gpg: '514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA'
-  - dir: '2/debian9/2.2'
-    repo: cassandra2
-    tags:
-      - '2.2.15-debian9'
-      - '2.2-debian9'
-      - '2-debian9'
-      - '2.2.15'
-      - '2.2'
-      - '2'
-      - 'latest'
-    from: *from9
-    packages:
-      gosu: *gosu
-      cassandra:
-        version: '2.2.15'
-        gpg: '514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA'
-  - dir: '3/debian9/3.0'
-    repo: cassandra3
-    tags:
-      - '3.0.19-debian9'
-      - '3.0-debian9'
-      - '3.0.19'
-      - '3.0'
-    from: *from9
-    packages:
-      gosu: *gosu
-      cassandra:
-        version: '3.0.19'
-        gpg: '514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA'
-  - dir: '3/debian9/3.11'
-    repo: cassandra3
-    tags:
-      - '3.11.5-debian9'
-      - '3.11-debian9'
-      - '3-debian9'
-      - '3.11.5'
-      - '3.11'
-      - '3'
-      - 'latest'
-    from: *from9
-    packages:
-      gosu: *gosu
-      cassandra:
-        version: '3.11.5'
-        gpg: '514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA'
 
 cloudbuild:
   enable_parallel: false
+versions:
+- dir: 3/debian9/3.8
+  from: gcr.io/google-appengine/debian9
+  packages:
+    cassandra:
+      gpg: 514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA
+      version: '3.8'
+    gosu:
+      gpg: B42F6819007F00F88E364FD4036A9C25BF357DD4
+      version: '1.10'
+  repo: cassandra3
+  tags:
+  - 3.8-debian9
+  - '3.8'
+  templateArgs:
+    c2dRelease: 3.8.0
+- dir: 3/debian9/3.11
+  from: gcr.io/google-appengine/debian9
+  packages:
+    cassandra:
+      gpg: 514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA
+      version: 3.11.5
+    gosu:
+      gpg: B42F6819007F00F88E364FD4036A9C25BF357DD4
+      version: '1.10'
+  repo: cassandra3
+  tags:
+  - 3.11.5-debian9
+  - 3.11-debian9
+  - 3-debian9
+  - 3.11.5
+  - '3.11'
+  - '3'
+  - latest
+  templateArgs:
+    c2dRelease: 3.11.5
+- dir: 2/debian9/2.2
+  from: gcr.io/google-appengine/debian9
+  packages:
+    cassandra:
+      gpg: 514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA
+      version: 2.2.15
+    gosu:
+      gpg: B42F6819007F00F88E364FD4036A9C25BF357DD4
+      version: '1.10'
+  repo: cassandra2
+  tags:
+  - 2.2.15-debian9
+  - 2.2-debian9
+  - 2-debian9
+  - 2.2.15
+  - '2.2'
+  - '2'
+  - latest
+  templateArgs:
+    c2dRelease: 2.2.15
+
