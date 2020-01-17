@@ -20,6 +20,7 @@ RUN set -ex; \
 
 {{- $gosu := index .Packages "gosu" }}
 {{- $cassandra := index .Packages "cassandra" }}
+{{- $c2dRelease := index .TemplateArgs "c2dRelease" }}
 
 # grab gosu for easy step-down from root
 ENV GOSU_VERSION {{ $gosu.Version }}
@@ -57,7 +58,7 @@ RUN echo {{ $cassandra.Version }} | sed 's-\([^.]\+\)\.\([^.]\+\).*$-deb http://
 
 ENV CASSANDRA_VERSION {{ $cassandra.Version }}
 
-ENV C2D_RELEASE=${CASSANDRA_VERSION}
+ENV C2D_RELEASE {{ $c2dRelease }}
 
 RUN set -x; \
 	if [ "${CASSANDRA_VERSION%%.*}" = "3" ]; then \
