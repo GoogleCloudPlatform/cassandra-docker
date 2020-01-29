@@ -1,4 +1,4 @@
-FROM gcr.io/google-appengine/debian9:latest
+FROM gcr.io/google-appengine/debian9
 
 # explicitly set user/group IDs
 RUN groupadd -r cassandra --gid=999 && useradd -r -g cassandra --uid=999 cassandra
@@ -82,7 +82,7 @@ RUN echo 3.11.5 | sed 's-\([^.]\+\)\.\([^.]\+\).*$-deb http://www.apache.org/dis
 
 ENV CASSANDRA_VERSION 3.11.5
 
-ENV C2D_RELEASE=${CASSANDRA_VERSION}
+ENV C2D_RELEASE 3.11.5
 
 RUN set -x; \
 	if [ "${CASSANDRA_VERSION%%.*}" = "3" ]; then \
