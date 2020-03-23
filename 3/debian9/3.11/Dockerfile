@@ -23,7 +23,8 @@ ENV GOSU_VERSION 1.10
 ENV GOSU_GPG B42F6819007F00F88E364FD4036A9C25BF357DD4
 
 RUN set -x \
-	&& apt-get update && apt-get install -y --no-install-recommends ca-certificates wget && rm -rf /var/lib/apt/lists/* \
+	&& apt-get update && apt-get install -y --no-install-recommends ca-certificates apt-transport-https wget \
+	&& rm -rf /var/lib/apt/lists/* \
 	&& wget -q -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture)" \
 	&& wget -q -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture).asc" \
 	&& wget -q -O /usr/local/src/gosu.tar.gz "https://github.com/tianon/gosu/archive/$GOSU_VERSION.tar.gz" \
@@ -46,49 +47,46 @@ RUN set -x \
 	&& gpg --no-tty --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu \
 	&& rm -rf "$GNUPGHOME" /usr/local/bin/gosu.asc \
 	&& chmod +x /usr/local/bin/gosu \
-	&& gosu nobody true \
-	&& apt-get purge -y --auto-remove ca-certificates wget
+	&& gosu nobody true
 
 # solves warning: "jemalloc shared library could not be preloaded to speed up memory allocations"
 RUN apt-get update && apt-get install -y --no-install-recommends libjemalloc1 && rm -rf /var/lib/apt/lists/*
 
 # https://wiki.apache.org/cassandra/DebianPackaging#Adding_Repository_Keys
-ENV GPG_KEYS 514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA
+ENV GPG_KEYS \
+# gpg: key 0353B12C: public key "T Jake Luciani <jake@apache.org>" imported
+	514A2AD631A57A16DD0047EC749D6EEC0353B12C \
+# gpg: key FE4B2BDA: public key "Michael Shuler <michael@pbandjelly.org>" imported
+	A26E528B271F19B9E5D8E19EA278B781FE4B2BDA \
+# gpg: key E91335D77E3E87CB: public key "Michael Semb Wever <mick@thelastpickle.com>" imported
+	A4C465FEA0C552561A392A61E91335D77E3E87CB
+
+ENV CASSANDRA_VERSION 3.11.6
+ENV CASSANDRA_SHA512 0e778f8fb4a050fde3ec174a9ca365e49ef437cd9e61280b6b4dcba950418a3d04a104bb41aed1add858e2acc2513cf7df4065ca5ca751dd1daf60e70adc4042
+ENV CASSANDRA_HOME /opt/cassandra
+ENV CASSANDRA_CONFIG /etc/cassandra
+ENV PATH $CASSANDRA_HOME/bin:$PATH
+
+ENV C2D_RELEASE 3.11.6
 
 RUN set -ex; \
-	export GNUPGHOME="$(mktemp -d)"; \
-	for key in $GPG_KEYS; do \
-		found='' && \
-	for server in \
-		pool.sks-keyservers.net \
-		na.pool.sks-keyservers.net \
-		eu.pool.sks-keyservers.net \
-		oc.pool.sks-keyservers.net \
-		ha.pool.sks-keyservers.net \
-		hkp://p80.pool.sks-keyservers.net:80 \
-		hkp://keyserver.ubuntu.com:80 \
-		pgp.mit.edu \
-	; do \
-		gpg --no-tty --keyserver $server --recv-keys "${key}" \
-			&& found=yes && break; \
-	done; \
-	test -n "$found"; \
-	done; \
-	gpg --no-tty --export $GPG_KEYS > /etc/apt/trusted.gpg.d/cassandra.gpg; \
-	rm -rf "$GNUPGHOME"; \
-	apt-key list
-
-RUN echo 3.11.5 | sed 's-\([^.]\+\)\.\([^.]\+\).*$-deb http://www.apache.org/dist/cassandra/debian \1\2x main-' >> /etc/apt/sources.list.d/cassandra.list
-
-ENV CASSANDRA_VERSION 3.11.5
-
-ENV C2D_RELEASE 3.11.5
+	export DIST_FILE="https://archive.apache.org/dist/cassandra/3.11.6/apache-cassandra-3.11.6-bin.tar.gz"; \
+	wget --progress=dot:giga -O "cassandra-bin.tgz" "${DIST_FILE}"; \
+	echo "$CASSANDRA_SHA512 *cassandra-bin.tgz" | sha512sum --check --strict -
 
 RUN set -x; \
 	if [ "${CASSANDRA_VERSION%%.*}" = "3" ]; then \
 		apt-get update && apt-get upgrade; \
 		apt-get install -y openjdk-8-jre-headless ntp; \
 	fi
+
+RUN mkdir -p "$CASSANDRA_HOME"; \
+	tar --extract --file cassandra-bin.tgz --directory "$CASSANDRA_HOME" --strip-components 1; \
+	rm cassandra-bin.tgz*; \
+	\
+	[ ! -e "$CASSANDRA_CONFIG" ]; \
+	mv "$CASSANDRA_HOME/conf" "$CASSANDRA_CONFIG"; \
+	ln -sT "$CASSANDRA_CONFIG" "$CASSANDRA_HOME/conf"
 
 ENV JMX_EXPORTER_VERSION 0.11.0
 ENV JMX_EXPORTER_PATH /opt/jmx-exporter
@@ -107,24 +105,23 @@ RUN apt-get update \
 	&& wget -O $JMX_EXPORTER_LICENSE https://raw.githubusercontent.com/prometheus/jmx_exporter/master/LICENSE \
 	&& wget -O $JMX_EXPORTER_NOTICE https://raw.githubusercontent.com/prometheus/jmx_exporter/master/NOTICE \
 	&& apt-get purge -y --auto-remove ca-certificates wget \
-	&& apt-get install -y cassandra="$CASSANDRA_VERSION" \
 	&& rm -rf /var/lib/apt/lists/*
 
 # https://issues.apache.org/jira/browse/CASSANDRA-11661
 RUN sed -ri 's/^(JVM_PATCH_VERSION)=.*/\1=25/' /etc/cassandra/cassandra-env.sh
-
-ENV CASSANDRA_CONFIG /etc/cassandra
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
 RUN mkdir -p /var/lib/cassandra "$CASSANDRA_CONFIG" \
 	&& chown -R cassandra:cassandra /var/lib/cassandra "$CASSANDRA_CONFIG" "$JMX_EXPORTER_PATH" \
-	&& chmod 777 /var/lib/cassandra "$CASSANDRA_CONFIG" "$JMX_EXPORTER_PATH"
+	&& chmod 777 /var/lib/cassandra "$CASSANDRA_CONFIG" "$JMX_EXPORTER_PATH" \
+	&& ln -sT /var/lib/cassandra "$CASSANDRA_HOME/data"
+
 VOLUME /var/lib/cassandra
 
-RUN test ${C2D_RELEASE} = $(cassandra -v) \
-         || { echo "Version check failed"; exit 1; }
+# RUN test ${C2D_RELEASE} = $(cassandra -v) \
+#         || { echo "Version check failed"; exit 1; }
 
 # 7000: intra-node communication
 # 7001: TLS intra-node communication
