@@ -29,10 +29,10 @@ versions:
   repo: cassandra3
   tags:
   - 3.11.6-debian9
-  - 3.11.6
   - 3.11-debian9
-  - '3.11'
   - 3-debian9
+  - 3.11.6
+  - '3.11'
   - '3'
   - latest
   templateArgs:
@@ -50,10 +50,10 @@ versions:
   repo: cassandra2
   tags:
   - 2.2.16-debian9
-  - 2.2.16
   - 2.2-debian9
-  - '2.2'
   - 2-debian9
+  - 2.2.16
+  - '2.2'
   - '2'
   - latest
   templateArgs:
