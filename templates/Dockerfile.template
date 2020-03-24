@@ -39,8 +39,21 @@ RUN set -x \
 	&& chmod +x /usr/local/bin/gosu \
 	&& gosu nobody true
 
-# solves warning: "jemalloc shared library could not be preloaded to speed up memory allocations"
-RUN apt-get update && apt-get install -y --no-install-recommends libjemalloc1 && rm -rf /var/lib/apt/lists/*
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends \
+		# solves warning: "jemalloc shared library could not be preloaded to speed up memory allocations"
+		libjemalloc1 \
+# "free" is used by cassandra-env.sh
+		procps \
+# "cqlsh" needs a python interpreter
+		python \
+# "ip" is not required by Cassandra itself, but is commonly used in scripting Cassandra's configuration (since it is so fixated on explicit IP addresses)
+		iproute2 \
+# Cassandra will automatically use numactl if available
+#   https://github.com/apache/cassandra/blob/18bcda2d4c2eba7370a0b21f33eed37cb730bbb3/bin/cassandra#L90-L100
+#   https://github.com/apache/cassandra/commit/604c0e87dc67fa65f6904ef9a98a029c9f2f865a
+		numactl \
+	&& rm -rf /var/lib/apt/lists/*
 
 # https://wiki.apache.org/cassandra/DebianPackaging#Adding_Repository_Keys
 ENV GPG_KEYS \
@@ -121,5 +134,3 @@ VOLUME /var/lib/cassandra
 # 9404: JMX Exporter for Prometheus metrics
 EXPOSE 7000 7001 7199 9042 9160 9404
 CMD ["cassandra", "-f"]
-# CMD ["tail", "-f", "/dev/null"]
-
