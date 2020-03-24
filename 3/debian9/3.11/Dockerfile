@@ -133,8 +133,8 @@ RUN mkdir -p /var/lib/cassandra "$CASSANDRA_CONFIG" /var/log/cassandra \
 
 VOLUME /var/lib/cassandra
 
-# RUN test ${C2D_RELEASE} = $(cassandra -v) \
-#         || { echo "Version check failed"; exit 1; }
+RUN test ${C2D_RELEASE} = $(cassandra -v) \
+        || { echo "Version check failed"; exit 1; }
 
 # 7000: intra-node communication
 # 7001: TLS intra-node communication

@@ -80,7 +80,7 @@ ENV CASSANDRA_HOME /opt/cassandra
 ENV CASSANDRA_CONFIG /etc/cassandra
 ENV PATH $CASSANDRA_HOME/bin:$PATH
 
-ENV C2D_RELEASE 2.2.15
+ENV C2D_RELEASE 2.2.16
 
 RUN set -ex; \
 	export DIST_FILE="https://archive.apache.org/dist/cassandra/2.2.16/apache-cassandra-2.2.16-bin.tar.gz"; \
@@ -133,8 +133,8 @@ RUN mkdir -p /var/lib/cassandra "$CASSANDRA_CONFIG" /var/log/cassandra \
 
 VOLUME /var/lib/cassandra
 
-# RUN test ${C2D_RELEASE} = $(cassandra -v) \
-#         || { echo "Version check failed"; exit 1; }
+RUN test ${C2D_RELEASE} = $(cassandra -v) \
+        || { echo "Version check failed"; exit 1; }
 
 # 7000: intra-node communication
 # 7001: TLS intra-node communication

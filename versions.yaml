@@ -57,5 +57,5 @@ versions:
   - '2'
   - latest
   templateArgs:
-    c2dRelease: 2.2.15
+    c2dRelease: 2.2.16
 
