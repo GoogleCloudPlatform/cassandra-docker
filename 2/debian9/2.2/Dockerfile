@@ -74,12 +74,6 @@ RUN set -ex; \
 	wget --progress=dot:giga -O "cassandra-bin.tgz" "${DIST_FILE}"; \
 	echo "$CASSANDRA_SHA512 *cassandra-bin.tgz" | sha512sum --check --strict -
 
-RUN set -x; \
-	if [ "${CASSANDRA_VERSION%%.*}" = "3" ]; then \
-		apt-get update && apt-get upgrade; \
-		apt-get install -y openjdk-8-jre-headless ntp; \
-	fi
-
 RUN mkdir -p "$CASSANDRA_HOME"; \
 	tar --extract --file cassandra-bin.tgz --directory "$CASSANDRA_HOME" --strip-components 1; \
 	rm cassandra-bin.tgz*; \
@@ -107,16 +101,22 @@ RUN apt-get update \
 	&& apt-get purge -y --auto-remove ca-certificates wget \
 	&& rm -rf /var/lib/apt/lists/*
 
+RUN set -x; \
+	apt-get update && apt-get upgrade; \
+	apt-get install -y openjdk-8-jre-headless ntp
+
 # https://issues.apache.org/jira/browse/CASSANDRA-11661
 RUN sed -ri 's/^(JVM_PATCH_VERSION)=.*/\1=25/' /etc/cassandra/cassandra-env.sh
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
-RUN mkdir -p /var/lib/cassandra "$CASSANDRA_CONFIG" \
-	&& chown -R cassandra:cassandra /var/lib/cassandra "$CASSANDRA_CONFIG" "$JMX_EXPORTER_PATH" \
-	&& chmod 777 /var/lib/cassandra "$CASSANDRA_CONFIG" "$JMX_EXPORTER_PATH" \
-	&& ln -sT /var/lib/cassandra "$CASSANDRA_HOME/data"
+RUN mkdir -p /var/lib/cassandra "$CASSANDRA_CONFIG" /var/log/cassandra \
+	&& chown -R cassandra:cassandra /var/lib/cassandra "$CASSANDRA_CONFIG" "$JMX_EXPORTER_PATH" /var/log/cassandra \
+	&& chmod 777 /var/lib/cassandra "$CASSANDRA_CONFIG" "$JMX_EXPORTER_PATH" /var/log/cassandra \
+	&& ln -sT /var/lib/cassandra "$CASSANDRA_HOME/data" \
+	&& ln -sT /var/log/cassandra "$CASSANDRA_HOME/logs" \
+	&& chown cassandra:cassandra /docker-entrypoint.sh
 
 VOLUME /var/lib/cassandra
 
@@ -131,4 +131,5 @@ VOLUME /var/lib/cassandra
 # 9404: JMX Exporter for Prometheus metrics
 EXPOSE 7000 7001 7199 9042 9160 9404
 CMD ["cassandra", "-f"]
+# CMD ["tail", "-f", "/dev/null"]
 
