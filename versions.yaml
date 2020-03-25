@@ -20,40 +20,42 @@ versions:
   from: gcr.io/google-appengine/debian9
   packages:
     cassandra:
+      sha512: 0e778f8fb4a050fde3ec174a9ca365e49ef437cd9e61280b6b4dcba950418a3d04a104bb41aed1add858e2acc2513cf7df4065ca5ca751dd1daf60e70adc4042
       gpg: 514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA
-      version: 3.11.5
+      version: 3.11.6
     gosu:
       gpg: B42F6819007F00F88E364FD4036A9C25BF357DD4
       version: '1.10'
   repo: cassandra3
   tags:
-  - 3.11.5-debian9
+  - 3.11.6-debian9
   - 3.11-debian9
   - 3-debian9
-  - 3.11.5
+  - 3.11.6
   - '3.11'
   - '3'
   - latest
   templateArgs:
-    c2dRelease: 3.11.5
+    c2dRelease: 3.11.6
 - dir: 2/debian9/2.2
   from: gcr.io/google-appengine/debian9
   packages:
     cassandra:
-      gpg: 514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA
-      version: 2.2.15
+      sha512: db2026342e876caf790833d49f7ab1a2fbba39bf380384ef66e2da4913f537690a56c97cb2f6ea17f667a0d34aeb406fa658db02aec1121a5ba7134ab59a5cfb
+      gpg: 514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA A4C465FEA0C552561A392A61E91335D77E3E87CB
+      version: 2.2.16
     gosu:
       gpg: B42F6819007F00F88E364FD4036A9C25BF357DD4
       version: '1.10'
   repo: cassandra2
   tags:
-  - 2.2.15-debian9
+  - 2.2.16-debian9
   - 2.2-debian9
   - 2-debian9
-  - 2.2.15
+  - 2.2.16
   - '2.2'
   - '2'
   - latest
   templateArgs:
-    c2dRelease: 2.2.15
+    c2dRelease: 2.2.16
 
