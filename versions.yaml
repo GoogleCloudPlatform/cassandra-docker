@@ -17,7 +17,7 @@ cloudbuild:
   enable_parallel: false
 versions:
 - dir: 3/debian9/3.11
-  from: gcr.io/google-appengine/debian9
+  from: marketplace.gcr.io/google/debian9
   packages:
     cassandra:
       gpg: 514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA
@@ -39,7 +39,7 @@ versions:
   templateArgs:
     c2dRelease: 3.11.6
 - dir: 2/debian9/2.2
-  from: gcr.io/google-appengine/debian9
+  from: marketplace.gcr.io/google/debian9
   packages:
     cassandra:
       gpg: 514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA
