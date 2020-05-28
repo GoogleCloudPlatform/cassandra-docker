@@ -1,4 +1,4 @@
-FROM gcr.io/google-appengine/debian9
+FROM marketplace.gcr.io/google/debian9
 
 # explicitly set user/group IDs
 RUN groupadd -r cassandra --gid=999 && useradd -r -g cassandra --uid=999 cassandra
