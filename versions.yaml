@@ -38,26 +38,4 @@ versions:
   - latest
   templateArgs:
     c2dRelease: 3.11.10
-- dir: 2/debian9/2.2
-  from: marketplace.gcr.io/google/debian9
-  packages:
-    cassandra:
-      gpg: 514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA
-        A4C465FEA0C552561A392A61E91335D77E3E87CB
-      sha512: 174688cb51ea7f683ace0de158a3ab080b2799c2001c501ede68253d2990d03737396cc7743eee6d65523bbd21f6b10948279691de1a313dc2f4d0d26cf5315b
-      version: 2.2.19
-    gosu:
-      gpg: B42F6819007F00F88E364FD4036A9C25BF357DD4
-      version: '1.10'
-  repo: cassandra2
-  tags:
-  - 2.2.19-debian9
-  - 2.2-debian9
-  - 2-debian9
-  - 2.2.19
-  - '2.2'
-  - '2'
-  - latest
-  templateArgs:
-    c2dRelease: 2.2.19
 

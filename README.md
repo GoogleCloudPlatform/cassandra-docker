@@ -1,6 +1,6 @@
 # <a name="about"></a>About
 
-This image contains an installation of Cassandra 3.x.
+This image contains an installation of Cassandra 3
 
 For more information, see the
 [Official Image Marketplace Page](https://console.cloud.google.com/marketplace/details/google/cassandra3).
