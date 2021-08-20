@@ -3,12 +3,12 @@
 This image contains an installation of Cassandra 3.x.
 
 For more information, see the
-[Official Image Launcher Page](https://console.cloud.google.com/launcher/details/google/cassandra3).
+[Official Image Marketplace Page](https://console.cloud.google.com/marketplace/details/google/cassandra3).
 
 Pull command (first install [gcloud](https://cloud.google.com/sdk/downloads)):
 
 ```shell
-gcloud docker -- pull launcher.gcr.io/google/cassandra3
+gcloud docker -- pull marketplace.gcr.io/google/cassandra3
 ```
 
 Dockerfile for this image can be found [here](https://github.com/GoogleCloudPlatform/cassandra-docker/tree/master/3).
@@ -33,7 +33,7 @@ Dockerfile for this image can be found [here](https://github.com/GoogleCloudPlat
 
 # <a name="using-kubernetes"></a>Using Kubernetes
 
-Consult [Launcher container documentation](https://cloud.google.com/launcher/docs/launcher-container)
+Consult [Marketplace container documentation](https://cloud.google.com/marketplace/docs/container-images)
 for additional information about setting up your Kubernetes environment.
 
 ## <a name="run-a-cassandra-server-kubernetes"></a>Run a Cassandra server
@@ -53,7 +53,7 @@ metadata:
     name: some-cassandra
 spec:
   containers:
-    - image: launcher.gcr.io/google/cassandra3
+    - image: marketplace.gcr.io/google/cassandra3
       name: cassandra
 ```
 
@@ -104,7 +104,7 @@ metadata:
     name: some-cassandra
 spec:
   containers:
-    - image: launcher.gcr.io/google/cassandra3
+    - image: marketplace.gcr.io/google/cassandra3
       name: cassandra
       volumeMounts:
         - name: cassandra-data
@@ -166,7 +166,7 @@ version: '2'
 services:
   cassandra:
     container_name: some-cassandra
-    image: launcher.gcr.io/google/cassandra3
+    image: marketplace.gcr.io/google/cassandra3
     ports:
       - '7000:7000'
       - '7001:7001'
@@ -188,7 +188,7 @@ docker run \
   -p 9160:9160 \
   -p 9404:9404 \
   -d \
-  launcher.gcr.io/google/cassandra3
+  marketplace.gcr.io/google/cassandra3
 ```
 
 For information about how to retain your Cassandra data across restarts, see [Add persistence](#add-persistence-docker).
@@ -216,7 +216,7 @@ version: '2'
 services:
   cassandra:
     container_name: some-cassandra
-    image: launcher.gcr.io/google/cassandra3
+    image: marketplace.gcr.io/google/cassandra3
     ports:
       - '7000:7000'
       - '7001:7001'
@@ -241,7 +241,7 @@ docker run \
   -p 9404:9404 \
   -v /path/to/your/cassandra:/var/lib/cassandra \
   -d \
-  launcher.gcr.io/google/cassandra3
+  marketplace.gcr.io/google/cassandra3
 ```
 
 # <a name="references"></a>References
