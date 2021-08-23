@@ -1,3 +1,17 @@
+cassandra-docker
+============
+
+Dockerfile source for cassandra [docker](https://docker.io) image.
+
+# Upstream
+
+This source repo was originally copied from:
+https://github.com/docker-library/cassandra
+
+# Disclaimer
+
+This is not an official Google product.
+
 # <a name="about"></a>About
 
 This image contains an installation of Cassandra 3
