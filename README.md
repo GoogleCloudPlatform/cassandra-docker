@@ -1,3 +1,17 @@
+cassandra-docker
+============
+
+Dockerfile source for cassandra [docker](https://docker.io) image.
+
+# Upstream
+
+This source repo was originally copied from:
+https://github.com/docker-library/cassandra
+
+# Disclaimer
+
+This is not an official Google product.
+
 # <a name="about"></a>About
 
 This image contains an installation of Cassandra 3
@@ -150,7 +164,9 @@ kubectl expose pod some-cassandra --name some-cassandra-9404 \
 
 # <a name="using-docker"></a>Using Docker
 
-Consult [Launcher container documentation](https://cloud.google.com/launcher/docs/launcher-container)
+
+Consult [Marketplace container documentation](https://cloud.google.com/marketplace/docs/container-images)
+
 for additional information about setting up your Docker environment.
 
 ## <a name="run-a-cassandra-server-docker"></a>Run a Cassandra server
