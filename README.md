@@ -19,11 +19,6 @@ This image contains an installation of Cassandra 3
 For more information, see the
 [Official Image Marketplace Page](https://console.cloud.google.com/marketplace/details/google/cassandra3).
 
-=======
-For more information, see the
-[Official Image Marketplace Page](https://console.cloud.google.com/marketplace/details/google/cassandra3).
-
-
 Pull command (first install [gcloud](https://cloud.google.com/sdk/downloads)):
 
 ```shell
@@ -171,7 +166,7 @@ kubectl expose pod some-cassandra --name some-cassandra-9404 \
 
 
 Consult [Marketplace container documentation](https://cloud.google.com/marketplace/docs/container-images)
-=======
+
 for additional information about setting up your Docker environment.
 
 ## <a name="run-a-cassandra-server-docker"></a>Run a Cassandra server
