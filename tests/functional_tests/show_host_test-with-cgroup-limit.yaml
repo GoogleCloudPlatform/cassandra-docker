@@ -26,4 +26,4 @@ tests:
   command: [cqlsh, -e, 'SHOW HOST']
   expect:
     stdout:
-      equals: Connected to Test Cluster at 127.0.0.1:9042.
+      matches: 'Connected to Test Cluster at 127.0.0.1:9042'
