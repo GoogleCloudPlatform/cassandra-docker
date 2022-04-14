@@ -14,7 +14,7 @@
 
 setup:
 - command: [docker, run, --privileged=true, --name, some-cassandra-$UNIQUE-id, -d, '$IMAGE']
-- command: [sleep, 30s]
+- command: [sleep, 90s]
 
 teardown:
 - command: [docker, stop, some-cassandra-$UNIQUE-id]
