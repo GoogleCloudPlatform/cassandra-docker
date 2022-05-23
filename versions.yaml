@@ -22,42 +22,42 @@ versions:
     cassandra:
       gpg: 514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA
         A4C465FEA0C552561A392A61E91335D77E3E87CB
-      sha512: b328a6bed9bf2d92f1e44a540bf1d800e26163257ca8e69d6f43ca792aeefe5bacf61b6e5bf2cf7233e34a168ab19de96a52fb3fe82304b7749fde2d7baa81d9
-      version: 4.0.3
+      sha512: 67a7830d32851bd8b7b02731a331a7640f5d7ab2a4d0b7caf1dee6e301c7508ce5209bd60faf42db915462d0796df833c021a4a964efce55561df57e91c27432
+      version: 4.0.4
     gosu:
       gpg: B42F6819007F00F88E364FD4036A9C25BF357DD4
       version: '1.10'
   repo: cassandra4
   tags:
-  - 4.0.3-debian9
+  - 4.0.4-debian9
   - 4.0-debian9
   - 4-debian9
-  - 4.0.3
+  - 4.0.4
   - '4.0'
   - '4'
   - latest
   templateArgs:
-    c2dRelease: 4.0.3
+    c2dRelease: 4.0.4
 - dir: 3/debian9/3.11
   from: marketplace.gcr.io/google/debian9
   packages:
     cassandra:
       gpg: 514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA
         A4C465FEA0C552561A392A61E91335D77E3E87CB
-      sha512: 788446e281353bd1bebab983702643a4a8a5ac39ae69d6e17c257793de7a9105884c2cd35a40873ad5a091b36cd916934ef2d51d1e347b729d5068fc54a54f01
-      version: 3.11.12
+      sha512: d356a27a355797f490a36ef14f6e0062c0f77e180ca29debbaa8a92b073e8a922010ad91b911c2a075117d0399d712bda2ac90724430884dd1e3297b6c5e064d
+      version: 3.11.13
     gosu:
       gpg: B42F6819007F00F88E364FD4036A9C25BF357DD4
       version: '1.10'
   repo: cassandra3
   tags:
-  - 3.11.12-debian9
+  - 3.11.13-debian9
   - 3.11-debian9
   - 3-debian9
-  - 3.11.12
+  - 3.11.13
   - '3.11'
   - '3'
   - latest
   templateArgs:
-    c2dRelease: 3.11.12
+    c2dRelease: 3.11.13
 
