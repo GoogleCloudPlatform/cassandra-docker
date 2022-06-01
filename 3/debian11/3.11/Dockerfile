@@ -52,7 +52,7 @@ RUN set -x \
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
 		# solves warning: "jemalloc shared library could not be preloaded to speed up memory allocations"
-		libjemalloc1 \
+		libjemalloc2 \
 # "free" is used by cassandra-env.sh
 		procps \
 # "cqlsh" needs a python interpreter
