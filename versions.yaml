@@ -28,6 +28,7 @@ versions:
       gpg: B42F6819007F00F88E364FD4036A9C25BF357DD4
       version: '1.10'
   repo: cassandra4
+  templateSubDir: 'cassandra4'
   tags:
   - 4.0.4-debian11
   - 4.0-debian11
@@ -38,8 +39,8 @@ versions:
   - latest
   templateArgs:
     c2dRelease: 4.0.4
-- dir: 3/debian11/3.11
-  from: marketplace.gcr.io/google/debian11
+- dir: 3/debian9/3.11
+  from: marketplace.gcr.io/google/debian9
   packages:
     cassandra:
       gpg: 514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA
@@ -50,10 +51,11 @@ versions:
       gpg: B42F6819007F00F88E364FD4036A9C25BF357DD4
       version: '1.10'
   repo: cassandra3
+  templateSubDir: 'cassandra3'
   tags:
-  - 3.11.13-debian11
-  - 3.11-debian11
-  - 3-debian11
+  - 3.11.13-debian9
+  - 3.11-debian9
+  - 3-debian9
   - 3.11.13
   - '3.11'
   - '3'
