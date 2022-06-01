@@ -16,8 +16,8 @@
 cloudbuild:
   enable_parallel: false
 versions:
-- dir: 4/debian9/4.0
-  from: marketplace.gcr.io/google/debian9
+- dir: 4/debian11/4.0
+  from: marketplace.gcr.io/google/debian11
   packages:
     cassandra:
       gpg: 514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA
@@ -28,10 +28,11 @@ versions:
       gpg: B42F6819007F00F88E364FD4036A9C25BF357DD4
       version: '1.10'
   repo: cassandra4
+  templateSubDir: 'cassandra4'
   tags:
-  - 4.0.4-debian9
-  - 4.0-debian9
-  - 4-debian9
+  - 4.0.4-debian11
+  - 4.0-debian11
+  - 4-debian11
   - 4.0.4
   - '4.0'
   - '4'
@@ -50,6 +51,7 @@ versions:
       gpg: B42F6819007F00F88E364FD4036A9C25BF357DD4
       version: '1.10'
   repo: cassandra3
+  templateSubDir: 'cassandra3'
   tags:
   - 3.11.13-debian9
   - 3.11-debian9

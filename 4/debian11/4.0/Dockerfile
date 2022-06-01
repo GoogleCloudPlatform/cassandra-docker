@@ -1,4 +1,4 @@
-FROM marketplace.gcr.io/google/debian9
+FROM marketplace.gcr.io/google/debian11
 
 # explicitly set user/group IDs
 RUN groupadd -r cassandra --gid=999 && useradd -r -g cassandra --uid=999 cassandra
@@ -52,7 +52,7 @@ RUN set -x \
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
 		# solves warning: "jemalloc shared library could not be preloaded to speed up memory allocations"
-		libjemalloc1 \
+		libjemalloc2 \
 # "free" is used by cassandra-env.sh
 		procps \
 # "cqlsh" needs a python interpreter
@@ -110,7 +110,7 @@ RUN apt-get update \
 
 RUN set -x; \
 	apt-get update && apt-get upgrade; \
-	apt-get install -y openjdk-8-jre-headless ntp
+	apt-get install -y openjdk-11-jre-headless ntp
 
 # https://issues.apache.org/jira/browse/CASSANDRA-11661
 RUN sed -ri 's/^(JVM_PATCH_VERSION)=.*/\1=25/' /etc/cassandra/cassandra-env.sh
