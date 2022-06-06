@@ -56,7 +56,7 @@ RUN apt-get update \
 # "free" is used by cassandra-env.sh
 		procps \
 # "cqlsh" needs a python interpreter
-		python \
+		python3 \
 # "ip" is not required by Cassandra itself, but is commonly used in scripting Cassandra's configuration (since it is so fixated on explicit IP addresses)
 		iproute2 \
 # Cassandra will automatically use numactl if available
