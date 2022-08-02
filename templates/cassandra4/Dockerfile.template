@@ -27,7 +27,7 @@ ENV GOSU_VERSION {{ $gosu.Version }}
 ENV GOSU_GPG {{ $gosu.Gpg }}
 
 RUN set -x \
-	&& apt-get update && apt-get install -y --no-install-recommends ca-certificates apt-transport-https wget \
+	&& apt-get update && apt-get install -y --no-install-recommends ca-certificates apt-transport-https wget openssl python3 python3-pip \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& wget -q -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture)" \
 	&& wget -q -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture).asc" \

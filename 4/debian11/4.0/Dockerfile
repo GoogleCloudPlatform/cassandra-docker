@@ -23,7 +23,7 @@ ENV GOSU_VERSION 1.10
 ENV GOSU_GPG B42F6819007F00F88E364FD4036A9C25BF357DD4
 
 RUN set -x \
-	&& apt-get update && apt-get install -y --no-install-recommends ca-certificates apt-transport-https wget \
+	&& apt-get update && apt-get install -y --no-install-recommends ca-certificates apt-transport-https wget openssl python3 python3-pip \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& wget -q -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture)" \
 	&& wget -q -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture).asc" \
