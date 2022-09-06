@@ -38,7 +38,7 @@ versions:
   - '4'
   - latest
   templateArgs:
-    c2dRelease: 4.0.5
+    c2dRelease: 4.0.6
 - dir: 3/debian9/3.11
   from: marketplace.gcr.io/google/debian9
   packages:

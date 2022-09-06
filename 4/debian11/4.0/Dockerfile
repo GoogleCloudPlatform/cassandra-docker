@@ -74,7 +74,7 @@ ENV CASSANDRA_HOME /opt/cassandra
 ENV CASSANDRA_CONFIG /etc/cassandra
 ENV PATH $CASSANDRA_HOME/bin:$PATH
 
-ENV C2D_RELEASE 4.0.5
+ENV C2D_RELEASE 4.0.6
 
 RUN set -ex; \
 	export DIST_FILE="https://archive.apache.org/dist/cassandra/4.0.6/apache-cassandra-4.0.6-bin.tar.gz"; \
