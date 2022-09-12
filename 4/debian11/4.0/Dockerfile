@@ -68,16 +68,16 @@ RUN apt-get update \
 # https://wiki.apache.org/cassandra/DebianPackaging#Adding_Repository_Keys
 ENV GPG_KEYS 514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA A4C465FEA0C552561A392A61E91335D77E3E87CB
 
-ENV CASSANDRA_VERSION 4.0.5
-ENV CASSANDRA_SHA512 188e131392ea0e48b46f24b1be297ef6335197f4480c9421328006507e069dce659ce3ce473906398273a5926e331960cbf824362e40cb4c74670cde95458349
+ENV CASSANDRA_VERSION 4.0.6
+ENV CASSANDRA_SHA512 07c2a2f018c5921bfe0d7afba877a23d0ac5bbda05b9414abc60b4fae761115d0fb650eb226247b66d62c450d7eeadc95b6e270ebf0339d8263222fe5d49b07b
 ENV CASSANDRA_HOME /opt/cassandra
 ENV CASSANDRA_CONFIG /etc/cassandra
 ENV PATH $CASSANDRA_HOME/bin:$PATH
 
-ENV C2D_RELEASE 4.0.5
+ENV C2D_RELEASE 4.0.6
 
 RUN set -ex; \
-	export DIST_FILE="https://archive.apache.org/dist/cassandra/4.0.5/apache-cassandra-4.0.5-bin.tar.gz"; \
+	export DIST_FILE="https://archive.apache.org/dist/cassandra/4.0.6/apache-cassandra-4.0.6-bin.tar.gz"; \
 	wget --progress=dot:giga -O "cassandra-bin.tgz" "${DIST_FILE}"; \
 	echo "$CASSANDRA_SHA512 *cassandra-bin.tgz" | sha512sum --check --strict -
 
