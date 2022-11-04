@@ -110,12 +110,11 @@ RUN apt-get update \
 
 RUN set -x; \
 	apt-get update && apt-get upgrade; \
- 	apt-get -y install software-properties-common \
+	apt-get -y install software-properties-common \
     && apt-add-repository 'deb http://security.debian.org/debian-security stretch/updates main' \
     && apt-get update \
     && apt-get install -y openjdk-8-jdk \
     && apt-add-repository --remove 'deb http://security.debian.org/debian-security stretch/updates main'
-
 
 # https://issues.apache.org/jira/browse/CASSANDRA-11661
 RUN sed -ri 's/^(JVM_PATCH_VERSION)=.*/\1=25/' /etc/cassandra/cassandra-env.sh
