@@ -1,4 +1,4 @@
-FROM marketplace.gcr.io/google/debian9
+FROM marketplace.gcr.io/google/debian11
 
 # explicitly set user/group IDs
 RUN groupadd -r cassandra --gid=999 && useradd -r -g cassandra --uid=999 cassandra
@@ -52,7 +52,7 @@ RUN set -x \
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
 		# solves warning: "jemalloc shared library could not be preloaded to speed up memory allocations"
-		libjemalloc1 \
+		libjemalloc2 \
 # "free" is used by cassandra-env.sh
 		procps \
 # "cqlsh" needs a python interpreter
@@ -68,16 +68,16 @@ RUN apt-get update \
 # https://wiki.apache.org/cassandra/DebianPackaging#Adding_Repository_Keys
 ENV GPG_KEYS 514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA A4C465FEA0C552561A392A61E91335D77E3E87CB
 
-ENV CASSANDRA_VERSION 3.11.13
-ENV CASSANDRA_SHA512 d356a27a355797f490a36ef14f6e0062c0f77e180ca29debbaa8a92b073e8a922010ad91b911c2a075117d0399d712bda2ac90724430884dd1e3297b6c5e064d
+ENV CASSANDRA_VERSION 3.11.14
+ENV CASSANDRA_SHA512 04ee6fa283079e58c9e8eb36bafa8a56ac1373a8845cad55e6f23e508f8bb19955b7bc70ad571ee351bb580c87181c521beeaadce14adbd9d9c87e86c2d15ec2
 ENV CASSANDRA_HOME /opt/cassandra
 ENV CASSANDRA_CONFIG /etc/cassandra
 ENV PATH $CASSANDRA_HOME/bin:$PATH
 
-ENV C2D_RELEASE 3.11.13
+ENV C2D_RELEASE 3.11.14
 
 RUN set -ex; \
-	export DIST_FILE="https://archive.apache.org/dist/cassandra/3.11.13/apache-cassandra-3.11.13-bin.tar.gz"; \
+	export DIST_FILE="https://archive.apache.org/dist/cassandra/3.11.14/apache-cassandra-3.11.14-bin.tar.gz"; \
 	wget --progress=dot:giga -O "cassandra-bin.tgz" "${DIST_FILE}"; \
 	echo "$CASSANDRA_SHA512 *cassandra-bin.tgz" | sha512sum --check --strict -
 
@@ -110,7 +110,11 @@ RUN apt-get update \
 
 RUN set -x; \
 	apt-get update && apt-get upgrade; \
-	apt-get install -y openjdk-8-jre-headless ntp
+	apt-get -y install software-properties-common \
+    && apt-add-repository 'deb http://security.debian.org/debian-security stretch/updates main' \
+    && apt-get update \
+    && apt-get install -y openjdk-8-jdk \
+    && apt-add-repository --remove 'deb http://security.debian.org/debian-security stretch/updates main'
 
 # https://issues.apache.org/jira/browse/CASSANDRA-11661
 RUN sed -ri 's/^(JVM_PATCH_VERSION)=.*/\1=25/' /etc/cassandra/cassandra-env.sh

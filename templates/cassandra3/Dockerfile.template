@@ -42,7 +42,7 @@ RUN set -x \
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
 		# solves warning: "jemalloc shared library could not be preloaded to speed up memory allocations"
-		libjemalloc1 \
+		libjemalloc2 \
 # "free" is used by cassandra-env.sh
 		procps \
 # "cqlsh" needs a python interpreter
@@ -100,7 +100,11 @@ RUN apt-get update \
 
 RUN set -x; \
 	apt-get update && apt-get upgrade; \
-	apt-get install -y openjdk-8-jre-headless ntp
+	apt-get -y install software-properties-common \
+    && apt-add-repository 'deb http://security.debian.org/debian-security stretch/updates main' \
+    && apt-get update \
+    && apt-get install -y openjdk-8-jdk \
+    && apt-add-repository --remove 'deb http://security.debian.org/debian-security stretch/updates main'
 
 # https://issues.apache.org/jira/browse/CASSANDRA-11661
 RUN sed -ri 's/^(JVM_PATCH_VERSION)=.*/\1=25/' /etc/cassandra/cassandra-env.sh
