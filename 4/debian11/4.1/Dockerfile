@@ -110,7 +110,7 @@ RUN apt-get update \
 
 RUN set -x; \
 	apt-get update && apt-get upgrade; \
-	apt-get install -y openjdk-11-jre-headless ntp
+	apt-get install -y openjdk-11-jre-headless ntp libtasn1-6
 
 # https://issues.apache.org/jira/browse/CASSANDRA-11661
 RUN sed -ri 's/^(JVM_PATCH_VERSION)=.*/\1=25/' /etc/cassandra/cassandra-env.sh
