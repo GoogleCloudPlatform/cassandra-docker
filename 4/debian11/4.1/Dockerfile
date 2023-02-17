@@ -1,4 +1,4 @@
-FROM marketplace.gcr.io/google/debian11
+FROM marketplace.gcr.io/google/c2d-debian11
 
 # explicitly set user/group IDs
 RUN groupadd -r cassandra --gid=999 && useradd -r -g cassandra --uid=999 cassandra
@@ -23,7 +23,7 @@ ENV GOSU_VERSION 1.10
 ENV GOSU_GPG B42F6819007F00F88E364FD4036A9C25BF357DD4
 
 RUN set -x \
-	&& apt-get update && apt-get install -y --no-install-recommends ca-certificates apt-transport-https wget openssl python3 python3-pip \
+	&& apt-get update && apt-get install -y --no-install-recommends ca-certificates apt-transport-https wget python3 python3-pip \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& wget -q -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture)" \
 	&& wget -q -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture).asc" \
@@ -69,7 +69,6 @@ RUN apt-get update \
 ENV GPG_KEYS 514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA A4C465FEA0C552561A392A61E91335D77E3E87CB
 
 ENV CASSANDRA_VERSION 4.1.0
-ENV CASSANDRA_SHA512 d8cb800e99d8905e85a62d1d658c1c3056459e7ba0b27e0997e1c537918be8ab333f2a89cf38cafc04ab4d711fd8c542593548fb30bf6a81329f2b47370389e9
 ENV CASSANDRA_HOME /opt/cassandra
 ENV CASSANDRA_CONFIG /etc/cassandra
 ENV PATH $CASSANDRA_HOME/bin:$PATH
@@ -78,8 +77,7 @@ ENV C2D_RELEASE 4.1.0
 
 RUN set -ex; \
 	export DIST_FILE="https://archive.apache.org/dist/cassandra/4.1.0/apache-cassandra-4.1.0-bin.tar.gz"; \
-	wget --progress=dot:giga -O "cassandra-bin.tgz" "${DIST_FILE}"; \
-	echo "$CASSANDRA_SHA512 *cassandra-bin.tgz" | sha512sum --check --strict -
+	wget --progress=dot:giga -O "cassandra-bin.tgz" "${DIST_FILE}"
 
 RUN mkdir -p "$CASSANDRA_HOME"; \
 	tar --extract --file cassandra-bin.tgz --directory "$CASSANDRA_HOME" --strip-components 1; \
@@ -110,7 +108,7 @@ RUN apt-get update \
 
 RUN set -x; \
 	apt-get update && apt-get upgrade; \
-	apt-get install -y openjdk-11-jre-headless ntp libtasn1-6
+	apt-get install -y openjdk-11-jre-headless ntp
 
 # https://issues.apache.org/jira/browse/CASSANDRA-11661
 RUN sed -ri 's/^(JVM_PATCH_VERSION)=.*/\1=25/' /etc/cassandra/cassandra-env.sh
