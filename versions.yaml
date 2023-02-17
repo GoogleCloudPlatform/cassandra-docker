@@ -17,12 +17,11 @@ cloudbuild:
   enable_parallel: false
 versions:
 - dir: 4/debian11/4.1
-  from: marketplace.gcr.io/google/debian11
+  from: marketplace.gcr.io/google/c2d-debian11
   packages:
     cassandra:
       gpg: 514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA
         A4C465FEA0C552561A392A61E91335D77E3E87CB
-      sha512: d8cb800e99d8905e85a62d1d658c1c3056459e7ba0b27e0997e1c537918be8ab333f2a89cf38cafc04ab4d711fd8c542593548fb30bf6a81329f2b47370389e9
       version: 4.1.0
     gosu:
       gpg: B42F6819007F00F88E364FD4036A9C25BF357DD4

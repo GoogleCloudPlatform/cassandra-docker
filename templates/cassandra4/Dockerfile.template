@@ -27,7 +27,7 @@ ENV GOSU_VERSION {{ $gosu.Version }}
 ENV GOSU_GPG {{ $gosu.Gpg }}
 
 RUN set -x \
-	&& apt-get update && apt-get install -y --no-install-recommends ca-certificates apt-transport-https wget openssl python3 python3-pip \
+	&& apt-get update && apt-get install -y --no-install-recommends ca-certificates apt-transport-https wget python3 python3-pip \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& wget -q -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture)" \
 	&& wget -q -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture).asc" \
@@ -59,7 +59,6 @@ RUN apt-get update \
 ENV GPG_KEYS {{ $cassandra.Gpg }}
 
 ENV CASSANDRA_VERSION {{ $cassandra.Version }}
-ENV CASSANDRA_SHA512 {{ $cassandra.Sha512 }}
 ENV CASSANDRA_HOME /opt/cassandra
 ENV CASSANDRA_CONFIG /etc/cassandra
 ENV PATH $CASSANDRA_HOME/bin:$PATH
@@ -68,8 +67,7 @@ ENV C2D_RELEASE {{ $c2dRelease }}
 
 RUN set -ex; \
 	export DIST_FILE="https://archive.apache.org/dist/cassandra/{{ $cassandra.Version }}/apache-cassandra-{{ $cassandra.Version }}-bin.tar.gz"; \
-	wget --progress=dot:giga -O "cassandra-bin.tgz" "${DIST_FILE}"; \
-	echo "$CASSANDRA_SHA512 *cassandra-bin.tgz" | sha512sum --check --strict -
+	wget --progress=dot:giga -O "cassandra-bin.tgz" "${DIST_FILE}"
 
 RUN mkdir -p "$CASSANDRA_HOME"; \
 	tar --extract --file cassandra-bin.tgz --directory "$CASSANDRA_HOME" --strip-components 1; \
@@ -100,7 +98,7 @@ RUN apt-get update \
 
 RUN set -x; \
 	apt-get update && apt-get upgrade; \
-	apt-get install -y openjdk-11-jre-headless ntp libtasn1-6
+	apt-get install -y openjdk-11-jre-headless ntp
 
 # https://issues.apache.org/jira/browse/CASSANDRA-11661
 RUN sed -ri 's/^(JVM_PATCH_VERSION)=.*/\1=25/' /etc/cassandra/cassandra-env.sh
