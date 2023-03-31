@@ -1,4 +1,4 @@
-# Copyright 2022 Google LLC
+# Copyright 2023 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@ versions:
       gpg: B42F6819007F00F88E364FD4036A9C25BF357DD4
       version: '1.10'
   repo: cassandra4
-  templateSubDir: 'cassandra4'
   tags:
   - 4.1.0-debian11
   - 4.1-debian11
