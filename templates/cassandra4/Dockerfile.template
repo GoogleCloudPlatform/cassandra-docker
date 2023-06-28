@@ -118,6 +118,18 @@ VOLUME /var/lib/cassandra
 RUN test ${C2D_RELEASE} = $(cassandra -v) \
         || { echo "Version check failed"; exit 1; }
 
+
+# Download Licenses
+COPY components.csv /components.csv
+COPY download-licenses.sh /download-licenses.sh
+RUN mkdir -p /usr/src && \
+		/download-licenses.sh /components.csv /usr/src/licenses
+
+# Download GPL source-code
+RUN git clone https://github.com/typetools/checker-framework.git /usr/src/checker-framework \
+		&& git clone https://github.com/qos-ch/logback.git /usr/src/logback \
+		&& git clone https://github.com/vbmacher/cup-maven-plugin /usr/src/cup-maven-plugin
+
 # 7000: intra-node communication
 # 7001: TLS intra-node communication
 # 7199: JMX
