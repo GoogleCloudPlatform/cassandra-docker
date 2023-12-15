@@ -37,5 +37,4 @@ versions:
   - latest
   templateArgs:
     c2dRelease: 4.1.2
-  templateSubDir: cassandra4
 
