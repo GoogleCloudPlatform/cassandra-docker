@@ -1,4 +1,4 @@
-# Copyright 2021 Google LLC
+# Copyright 2024 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,48 +16,26 @@
 cloudbuild:
   enable_parallel: false
 versions:
-- dir: 3/debian9/3.11
-  from: marketplace.gcr.io/google/debian9
+- dir: 4/debian11/4.1
+  from: marketplace.gcr.io/google/c2d-debian11
   packages:
     cassandra:
       gpg: 514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA
         A4C465FEA0C552561A392A61E91335D77E3E87CB
-      sha512: f229e2dad47ebaeb6bb7ed13ee5cea3bd3ad9994cc9222cabbffa59651e12dbf9a463e99d397a0c4096c61bacb87d34eb4fba4f8ed9da0f0972a3d7225cef36f
-      version: 3.11.10
+      version: 4.1.5
     gosu:
       gpg: B42F6819007F00F88E364FD4036A9C25BF357DD4
-      version: '1.10'
-  repo: cassandra3
+      version: '1.17'
+  repo: cassandra4
   tags:
-  - 3.11.10-debian9
-  - 3.11-debian9
-  - 3-debian9
-  - 3.11.10
-  - '3.11'
-  - '3'
+  - 4.1.5-debian11
+  - 4.1-debian11
+  - 4-debian11
+  - 4.1.5
+  - '4.1'
+  - '4'
   - latest
   templateArgs:
-    c2dRelease: 3.11.10
-- dir: 2/debian9/2.2
-  from: marketplace.gcr.io/google/debian9
-  packages:
-    cassandra:
-      gpg: 514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA
-        A4C465FEA0C552561A392A61E91335D77E3E87CB
-      sha512: 174688cb51ea7f683ace0de158a3ab080b2799c2001c501ede68253d2990d03737396cc7743eee6d65523bbd21f6b10948279691de1a313dc2f4d0d26cf5315b
-      version: 2.2.19
-    gosu:
-      gpg: B42F6819007F00F88E364FD4036A9C25BF357DD4
-      version: '1.10'
-  repo: cassandra2
-  tags:
-  - 2.2.19-debian9
-  - 2.2-debian9
-  - 2-debian9
-  - 2.2.19
-  - '2.2'
-  - '2'
-  - latest
-  templateArgs:
-    c2dRelease: 2.2.19
+    c2dRelease: 4.1.5
+  templateSubDir: cassandra4
 

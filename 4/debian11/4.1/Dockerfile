@@ -1,4 +1,4 @@
-FROM marketplace.gcr.io/google/debian9
+FROM marketplace.gcr.io/google/c2d-debian11
 
 # explicitly set user/group IDs
 RUN groupadd -r cassandra --gid=999 && useradd -r -g cassandra --uid=999 cassandra
@@ -19,11 +19,11 @@ RUN set -ex; \
 	rm -rf /var/lib/apt/lists/*;
 
 # grab gosu for easy step-down from root
-ENV GOSU_VERSION 1.10
+ENV GOSU_VERSION 1.17
 ENV GOSU_GPG B42F6819007F00F88E364FD4036A9C25BF357DD4
 
 RUN set -x \
-	&& apt-get update && apt-get install -y --no-install-recommends ca-certificates apt-transport-https wget \
+	&& apt-get update && apt-get install -y --no-install-recommends ca-certificates apt-transport-https wget python3 python3-pip \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& wget -q -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture)" \
 	&& wget -q -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture).asc" \
@@ -52,11 +52,11 @@ RUN set -x \
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
 		# solves warning: "jemalloc shared library could not be preloaded to speed up memory allocations"
-		libjemalloc1 \
+		libjemalloc2 \
 # "free" is used by cassandra-env.sh
 		procps \
 # "cqlsh" needs a python interpreter
-		python \
+		python3 \
 # "ip" is not required by Cassandra itself, but is commonly used in scripting Cassandra's configuration (since it is so fixated on explicit IP addresses)
 		iproute2 \
 # Cassandra will automatically use numactl if available
@@ -68,18 +68,16 @@ RUN apt-get update \
 # https://wiki.apache.org/cassandra/DebianPackaging#Adding_Repository_Keys
 ENV GPG_KEYS 514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA A4C465FEA0C552561A392A61E91335D77E3E87CB
 
-ENV CASSANDRA_VERSION 2.2.19
-ENV CASSANDRA_SHA512 174688cb51ea7f683ace0de158a3ab080b2799c2001c501ede68253d2990d03737396cc7743eee6d65523bbd21f6b10948279691de1a313dc2f4d0d26cf5315b
+ENV CASSANDRA_VERSION 4.1.5
 ENV CASSANDRA_HOME /opt/cassandra
 ENV CASSANDRA_CONFIG /etc/cassandra
 ENV PATH $CASSANDRA_HOME/bin:$PATH
 
-ENV C2D_RELEASE 2.2.19
+ENV C2D_RELEASE 4.1.5
 
 RUN set -ex; \
-	export DIST_FILE="https://archive.apache.org/dist/cassandra/2.2.19/apache-cassandra-2.2.19-bin.tar.gz"; \
-	wget --progress=dot:giga -O "cassandra-bin.tgz" "${DIST_FILE}"; \
-	echo "$CASSANDRA_SHA512 *cassandra-bin.tgz" | sha512sum --check --strict -
+	export DIST_FILE="https://archive.apache.org/dist/cassandra/4.1.5/apache-cassandra-4.1.5-bin.tar.gz"; \
+	wget --progress=dot:giga -O "cassandra-bin.tgz" "${DIST_FILE}"
 
 RUN mkdir -p "$CASSANDRA_HOME"; \
 	tar --extract --file cassandra-bin.tgz --directory "$CASSANDRA_HOME" --strip-components 1; \
@@ -110,7 +108,7 @@ RUN apt-get update \
 
 RUN set -x; \
 	apt-get update && apt-get upgrade; \
-	apt-get install -y openjdk-8-jre-headless ntp
+	apt-get install -y openjdk-11-jre-headless ntp
 
 # https://issues.apache.org/jira/browse/CASSANDRA-11661
 RUN sed -ri 's/^(JVM_PATCH_VERSION)=.*/\1=25/' /etc/cassandra/cassandra-env.sh
@@ -129,6 +127,18 @@ VOLUME /var/lib/cassandra
 
 RUN test ${C2D_RELEASE} = $(cassandra -v) \
         || { echo "Version check failed"; exit 1; }
+
+
+# Download Licenses
+COPY components.csv /components.csv
+COPY download-licenses.sh /download-licenses.sh
+RUN mkdir -p /usr/src && \
+		/download-licenses.sh /components.csv /usr/src/licenses
+
+# Download GPL source-code
+RUN git clone https://github.com/typetools/checker-framework.git /usr/src/checker-framework \
+		&& git clone https://github.com/qos-ch/logback.git /usr/src/logback \
+		&& git clone https://github.com/vbmacher/cup-maven-plugin /usr/src/cup-maven-plugin
 
 # 7000: intra-node communication
 # 7001: TLS intra-node communication
