@@ -28,4 +28,4 @@ tests:
   command: [curl, 'http://localhost:9404/metrics']
   expect:
     stdout:
-      matches: '# HELP jvm_info JVM version info'
+      matches: '# TYPE cassandra_threadpools_completedtasks gauge'
