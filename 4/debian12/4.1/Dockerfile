@@ -87,7 +87,7 @@ RUN mkdir -p "$CASSANDRA_HOME"; \
 	mv "$CASSANDRA_HOME/conf" "$CASSANDRA_CONFIG"; \
 	ln -sT "$CASSANDRA_CONFIG" "$CASSANDRA_HOME/conf"
 
-ENV JMX_EXPORTER_VERSION 0.11.0
+ENV JMX_EXPORTER_VERSION 1.0.1
 ENV JMX_EXPORTER_PATH /opt/jmx-exporter
 ENV JMX_EXPORTER_JAR jmx_prometheus_javaagent-${JMX_EXPORTER_VERSION}.jar
 ENV JMX_EXPORTER_AGENT ${JMX_EXPORTER_PATH}/${JMX_EXPORTER_JAR}
@@ -97,7 +97,7 @@ ENV JMX_EXPORTER_NOTICE ${JMX_EXPORTER_PATH}/NOTICE
 
 
 RUN apt-get update \
-	&& apt-get install -y --no-install-recommends ca-certificates wget \
+	&& apt-get install -y --no-install-recommends curl git ca-certificates wget \
 	&& mkdir -p $JMX_EXPORTER_PATH \
 	&& wget -O $JMX_EXPORTER_AGENT https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/$JMX_EXPORTER_VERSION/$JMX_EXPORTER_JAR \
 	&& wget -O $JMX_EXPORTER_CONFIG https://raw.githubusercontent.com/prometheus/jmx_exporter/master/example_configs/cassandra.yml \
@@ -107,11 +107,9 @@ RUN apt-get update \
 	&& rm -rf /var/lib/apt/lists/*
 
 RUN set -x; \
-	apt-get update && apt-get upgrade; \
-	apt-get install -y openjdk-17-jre-headless ntp
-
-# https://issues.apache.org/jira/browse/CASSANDRA-11661
-RUN sed -ri 's/^(JVM_PATCH_VERSION)=.*/\1=25/' /etc/cassandra/cassandra-env.sh
+		echo "deb http://deb.debian.org/debian unstable main non-free non-free-firmware contrib" > /etc/apt/sources.list.d/debian-unstable.list; \
+		apt-get update \
+		&& apt-get -y install openjdk-11-jdk
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
@@ -147,4 +145,5 @@ RUN git clone https://github.com/typetools/checker-framework.git /usr/src/checke
 # 9160: thrift service
 # 9404: JMX Exporter for Prometheus metrics
 EXPOSE 7000 7001 7199 9042 9160 9404
+
 CMD ["cassandra", "-f"]
