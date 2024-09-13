@@ -16,8 +16,8 @@
 cloudbuild:
   enable_parallel: false
 versions:
-- dir: 4/debian11/4.1
-  from: marketplace.gcr.io/google/c2d-debian11
+- dir: 4/debian12/4.1
+  from: marketplace.gcr.io/google/debian12
   packages:
     cassandra:
       gpg: 514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA
@@ -28,9 +28,9 @@ versions:
       version: '1.17'
   repo: cassandra4
   tags:
-  - 4.1.5-debian11
-  - 4.1-debian11
-  - 4-debian11
+  - 4.1.5-debian12
+  - 4.1-debian12
+  - 4-debian12
   - 4.1.5
   - '4.1'
   - '4'
@@ -38,4 +38,3 @@ versions:
   templateArgs:
     c2dRelease: 4.1.5
   templateSubDir: cassandra4
-
