@@ -27,6 +27,9 @@ versions:
       gpg: B42F6819007F00F88E364FD4036A9C25BF357DD4
       version: '1.17'
   repo: cassandra4
+  annotations:
+  - key: com.googleapis.cloudmarketplace.product.service.name
+    value: services/ba024e66-0fcf-4db1-8775-c934ffaf77da.cloudpartnerservices.goog
   tags:
   - 4.1.5-debian12
   - 4.1-debian12
