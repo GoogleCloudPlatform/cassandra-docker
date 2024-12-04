@@ -1,3 +1,55 @@
+
+
+FROM golang:1.23.4-bookworm AS gosu-builder
+
+RUN set -eux; \
+	apt-get update; \
+	apt-get install -y --no-install-recommends \
+		arch-test \
+		file \
+		patch \
+		git \
+	; \
+	rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /usr/src/ \
+		&& git clone https://github.com/tianon/gosu.git --branch "1.17" /usr/src/gosu
+
+# note: we cannot add "-s" here because then "govulncheck" does not work (see SECURITY.md); the ~0.2MiB increase (as of 2022-12-16, Go 1.18) is worth it
+ENV BUILD_FLAGS="-v -ldflags '-d -w'"
+
+RUN set -eux; \
+	{ \
+		echo '#!/usr/bin/env bash'; \
+		echo 'set -Eeuo pipefail -x'; \
+		echo 'eval "go build $BUILD_FLAGS -o /go/bin/gosu-$ARCH"'; \
+		echo 'file "/go/bin/gosu-$ARCH"'; \
+		echo 'if arch-test "$ARCH"; then'; \
+# there's a fun QEMU + Go 1.18+ bug that causes our binaries (especially on ARM arches) to hang indefinitely *sometimes*, hence the "timeout" and looping here
+		echo '  try() { for (( i = 0; i < 30; i++ )); do if timeout 1s "$@"; then return 0; fi; done; return 1; }'; \
+		echo '  try "/go/bin/gosu-$ARCH" --version'; \
+		echo '  try "/go/bin/gosu-$ARCH" nobody id'; \
+		echo '  try "/go/bin/gosu-$ARCH" nobody ls -l /proc/self/fd'; \
+		echo 'fi'; \
+	} > /usr/local/bin/gosu-build-and-test.sh; \
+	chmod +x /usr/local/bin/gosu-build-and-test.sh
+
+# disable CGO for ALL THE THINGS (to help ensure no libc)
+ENV CGO_ENABLED 0
+
+WORKDIR /go/src/github.com/tianon/gosu
+RUN cp /usr/src/gosu/go.mod /usr/src/gosu/go.sum ./
+RUN set -eux; \
+	go mod download; \
+	go mod verify
+
+RUN cp /usr/src/gosu/*.go ./
+
+RUN ARCH=amd64    GOARCH=amd64       gosu-build-and-test.sh
+
+RUN set -eux; ls -lAFh /go/bin/gosu-*; file /go/bin/gosu-*
+
+
 FROM marketplace.gcr.io/google/debian12
 
 # explicitly set user/group IDs
@@ -18,39 +70,13 @@ RUN set -ex; \
 	fi ; \
 	rm -rf /var/lib/apt/lists/*;
 
-# grab gosu for easy step-down from root
-ENV GOSU_VERSION 1.17
-ENV GOSU_GPG B42F6819007F00F88E364FD4036A9C25BF357DD4
-
-RUN set -x \
-	&& apt-get update && apt-get install -y --no-install-recommends ca-certificates apt-transport-https wget python3 python3-pip \
-	&& rm -rf /var/lib/apt/lists/* \
-	&& wget -q -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture)" \
-	&& wget -q -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture).asc" \
-	&& wget -q -O /usr/local/src/gosu.tar.gz "https://github.com/tianon/gosu/archive/$GOSU_VERSION.tar.gz" \
-	&& export GNUPGHOME="$(mktemp -d)" \
-	&& found='' && \
-	for server in \
-		pool.sks-keyservers.net \
-		na.pool.sks-keyservers.net \
-		eu.pool.sks-keyservers.net \
-		oc.pool.sks-keyservers.net \
-		ha.pool.sks-keyservers.net \
-		hkp://p80.pool.sks-keyservers.net:80 \
-		hkp://keyserver.ubuntu.com:80 \
-		pgp.mit.edu \
-	; do \
-		gpg --no-tty --keyserver $server --recv-keys $GOSU_GPG \
-			&& found=yes && break; \
-	done; \
-	test -n "$found" \
-	&& gpg --no-tty --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu \
-	&& rm -rf "$GNUPGHOME" /usr/local/bin/gosu.asc \
-	&& chmod +x /usr/local/bin/gosu \
-	&& gosu nobody true
+COPY --from=gosu-builder /go/bin/gosu-amd64 /usr/local/bin/gosu
+RUN chmod +x /usr/local/bin/gosu \
+			&& gosu nobody true
 
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
+		ca-certificates \
 		# solves warning: "jemalloc shared library could not be preloaded to speed up memory allocations"
 		libjemalloc2 \
 # "free" is used by cassandra-env.sh
@@ -63,20 +89,21 @@ RUN apt-get update \
 #   https://github.com/apache/cassandra/blob/18bcda2d4c2eba7370a0b21f33eed37cb730bbb3/bin/cassandra#L90-L100
 #   https://github.com/apache/cassandra/commit/604c0e87dc67fa65f6904ef9a98a029c9f2f865a
 		numactl \
+		wget \
 	&& rm -rf /var/lib/apt/lists/*
 
 # https://wiki.apache.org/cassandra/DebianPackaging#Adding_Repository_Keys
 ENV GPG_KEYS 514A2AD631A57A16DD0047EC749D6EEC0353B12C A26E528B271F19B9E5D8E19EA278B781FE4B2BDA A4C465FEA0C552561A392A61E91335D77E3E87CB
 
-ENV CASSANDRA_VERSION 4.1.5
+ENV CASSANDRA_VERSION 4.1.7
 ENV CASSANDRA_HOME /opt/cassandra
 ENV CASSANDRA_CONFIG /etc/cassandra
 ENV PATH $CASSANDRA_HOME/bin:$PATH
 
-ENV C2D_RELEASE 4.1.5
+ENV C2D_RELEASE 4.1.7
 
 RUN set -ex; \
-	export DIST_FILE="https://archive.apache.org/dist/cassandra/4.1.5/apache-cassandra-4.1.5-bin.tar.gz"; \
+	export DIST_FILE="https://archive.apache.org/dist/cassandra/4.1.7/apache-cassandra-4.1.7-bin.tar.gz"; \
 	wget --progress=dot:giga -O "cassandra-bin.tgz" "${DIST_FILE}"
 
 RUN mkdir -p "$CASSANDRA_HOME"; \
@@ -100,9 +127,9 @@ RUN apt-get update \
 	&& apt-get install -y --no-install-recommends curl git ca-certificates wget \
 	&& mkdir -p $JMX_EXPORTER_PATH \
 	&& wget -O $JMX_EXPORTER_AGENT https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/$JMX_EXPORTER_VERSION/$JMX_EXPORTER_JAR \
-	&& wget -O $JMX_EXPORTER_CONFIG https://raw.githubusercontent.com/prometheus/jmx_exporter/master/example_configs/cassandra.yml \
-	&& wget -O $JMX_EXPORTER_LICENSE https://raw.githubusercontent.com/prometheus/jmx_exporter/master/LICENSE \
-	&& wget -O $JMX_EXPORTER_NOTICE https://raw.githubusercontent.com/prometheus/jmx_exporter/master/NOTICE \
+	&& wget -O $JMX_EXPORTER_CONFIG https://raw.githubusercontent.com/prometheus/jmx_exporter/main/examples/cassandra.yml \
+	&& wget -O $JMX_EXPORTER_LICENSE https://raw.githubusercontent.com/prometheus/jmx_exporter/main/LICENSE \
+	&& wget -O $JMX_EXPORTER_NOTICE https://raw.githubusercontent.com/prometheus/jmx_exporter/main/NOTICE \
 	&& apt-get purge -y --auto-remove ca-certificates wget \
 	&& rm -rf /var/lib/apt/lists/*
 
